@@ -68,8 +68,22 @@
 
     <script>
       const d = JSON.parse(localStorage.getItem("currentOrder"));
+
+      function goBack() {
+        localStorage.removeItem("currentOrder");
+        location.replace("index.html");
+      }
+
+      // ESC bosilsa → index.html
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          goBack();
+        }
+      });
+
       if (!d) {
         document.getElementById("out").innerHTML = "Нет данных";
+        setTimeout(goBack, 1000);
       } else {
         const checkNo = Math.floor(1000 + Math.random() * 9000);
 
@@ -79,73 +93,80 @@
         d.items.forEach((i) => {
           S += i.sum;
           rows += `
-          <tr>
-            <td>КОВЕР</td>
-            <td>${i.l}×${i.w}</td>
-            <td class="right">${i.sum.toLocaleString()}</td>
-          </tr>
-        `;
+            <tr>
+              <td>КОВЕР</td>
+              <td>${i.l}×${i.w}</td>
+              <td class="right">${i.sum.toLocaleString()}</td>
+            </tr>
+          `;
         });
 
         document.getElementById("out").innerHTML = `
-        <div class="center">
-          <img src="https://peculiar-azure-xpdzzqfo3r.edgeone.app/Skrinshot_2026-01-03_175603-removebg-preview.png" width="120"><br>
-          <div class="bold">ФАБРИКА ЧИСТКИ КОВРОВ</div>
-          <div class="small">
-            Ул. Буюк Ипак Йули 62А<br>
-            Ташкент<br>
-            Тел: 71 203 82 82
+          <div class="center">
+            <img src="https://peculiar-azure-xpdzzqfo3r.edgeone.app/Skrinshot_2026-01-03_175603-removebg-preview.png" width="120"><br>
+            <div class="bold">ФАБРИКА ЧИСТКИ КОВРОВ</div>
+            <div class="small">
+              Ул. Буюк Ипак Йули 62А<br>
+              Ташкент<br>
+              Тел: 71 203 82 82
+            </div>
           </div>
-        </div>
 
-        <div class="line"></div>
+          <div class="line"></div>
 
-        <div class="center bold">
-          ${new Date().toLocaleString()}
-        </div>
-        <div class="center bold">
-          Чек № ${checkNo}
-        </div>
+          <div class="center bold">
+            ${new Date().toLocaleString()}
+          </div>
+          <div class="center bold">
+            Чек № ${checkNo}
+          </div>
 
-        <div class="line"></div>
+          <div class="line"></div>
 
-        <div class="big">Заказчик: ${d.name}</div>
-        <div class="big">Телефон: ${d.phone || "-"}</div>
-        <div class="big">Адрес: ${d.address || "-"}</div>
+          <div class="big">Заказчик: ${d.name}</div>
+          <div class="big">Телефон: ${d.phone || "-"}</div>
+          <div class="big">Адрес: ${d.address || "-"}</div>
 
-        <div class="line"></div>
+          <div class="line"></div>
 
-        <table>
-          <tr class="bold">
-            <td>Наим.</td>
-            <td>Кол</td>
-            <td class="right">Сумма</td>
-          </tr>
-          ${rows}
-        </table>
+          <table>
+            <tr class="bold">
+              <td>Наим.</td>
+              <td>Кол</td>
+              <td class="right">Сумма</td>
+            </tr>
+            ${rows}
+          </table>
 
-        <div class="line"></div>
+          <div class="line"></div>
 
-        <div class="bold">ИТОГО: ${S.toLocaleString()} сум</div>
-        <div>Оплачено: ${(d.paid || 0).toLocaleString()} сум</div>
-        <div>Тип оплаты: ${d.paymentType || "-"}</div>
+          <div class="bold">ИТОГО: ${S.toLocaleString()} сум</div>
+          <div>Оплачено: ${(d.paid || 0).toLocaleString()} сум</div>
+          <div>Тип оплаты: ${d.paymentType || "-"}</div>
 
-        <div class="line"></div>
+          <div class="line"></div>
 
-        <div class="small">
-          ВНИМАНИЕ ЗАКАЗЧИКА!<br>
-          Химчистка не несет ответственности за скрытые дефекты изделия.
-        </div>
+          <div class="small">
+            ВНИМАНИЕ ЗАКАЗЧИКА!<br>
+            Химчистка не несет ответственности за скрытые дефекты изделия.
+          </div>
 
-        <div class="line"></div>
+          <div class="line"></div>
 
-        <div class="small">
-          Подпись клиента: ______________________
-        </div>
-      `;
+          <div class="small">
+            Подпись клиента: ______________________
+          </div>
+        `;
 
-        window.print();
-        window.onafterprint = () => window.close();
+        // biroz kutib print ochiladi
+        setTimeout(() => {
+          window.print();
+        }, 300);
+
+        // print tugasa yoki bekor qilinsa → index.html
+        window.onafterprint = () => {
+          goBack();
+        };
       }
     </script>
   </body>
