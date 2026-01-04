@@ -30,7 +30,7 @@
       button {
         width: 100%;
         padding: 14px;
-        margin-top: 10px;
+        margin-top: 8px;
         border-radius: 12px;
         font-size: 16px;
       }
@@ -80,12 +80,12 @@
 
         <input id="paid" type="number" placeholder="To‘langan summa" />
 
-        <button onclick="save()">🧾 Chek chiqarish</button>
+        <button onclick="saveAndPrint()">🧾 Chek chiqarish</button>
       </div>
     </div>
 
     <script>
-      const API = "https://gilam-yuvish-backend.onrender.com/orders";
+      const API = "https://gilam-yuvish-backend.onrender.com";
       let items = [];
 
       function openReport() {
@@ -116,18 +116,16 @@
         total.textContent = s.toLocaleString();
       }
 
-      function save() {
+      function saveAndPrint() {
         if (!items.length) return alert("Gilam qo‘shing");
-        if (!name.value) return alert("Ism kiriting");
-
-        const totalSum = items.reduce((s, i) => s + i.sum, 0);
 
         const order = {
           name: name.value,
           phone: phone.value,
-          items: items,
-          total: totalSum,
+          items,
+          total: Number(total.textContent.replace(/\s/g, "")),
           paid: Number(paid.value) || 0,
+          date: new Date().toLocaleString(),
         };
 
         localStorage.setItem("currentOrder", JSON.stringify(order));
@@ -136,15 +134,12 @@
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(order),
-        })
-          .then((r) => r.json())
-          .then(() => {
-            items = [];
-            render();
-            name.value = phone.value = paid.value = "";
-            window.open("print.html", "_blank");
-          })
-          .catch(() => alert("Server xatosi"));
+        }).then(() => {
+          items = [];
+          render();
+          name.value = phone.value = paid.value = "";
+          window.open("print.html", "_blank");
+        });
       }
     </script>
   </body>
