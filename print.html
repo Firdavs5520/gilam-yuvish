@@ -26,38 +26,32 @@
     </style>
   </head>
   <body>
-    <div class="center"><b>GILAM YUVISH</b><br /></div>
-
+    <div class="center"><b>GILAM YUVISH</b></div>
     <div class="line"></div>
-
     <div id="out"></div>
-
-    <div class="line"></div>
 
     <script>
       const o = JSON.parse(localStorage.getItem("currentOrder") || "{}");
-
       let html = `
-Sana: ${o.date || ""}<br>
+Sana: ${new Date().toLocaleString()}<br>
 Ism: ${o.name || ""}<br>
-Telefon: ${o.phone || ""}<br>
+Tel: ${o.phone || ""}<br>
 <div class="line"></div>
 `;
 
       let sum = 0;
       (o.items || []).forEach((i) => {
-        html += `${i.l}×${i.w} = ${i.sum.toLocaleString()}<br>`;
         sum += i.sum;
+        html += `${i.l}×${i.w} = ${i.sum.toLocaleString()}<br>`;
       });
 
       html += `
 <div class="line"></div>
 Jami: ${sum.toLocaleString()}<br>
-To‘langan: ${(o.paid || 0).toLocaleString()}<br>
+To‘langan: ${(o.paid || 0).toLocaleString()}
 `;
 
       out.innerHTML = html;
-
       window.print();
       window.onafterprint = () => window.close();
     </script>
