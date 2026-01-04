@@ -6,140 +6,220 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <style>
+      :root {
+        --bg: #f1f5f9;
+        --card: #ffffff;
+        --text: #0f172a;
+        --muted: #64748b;
+        --accent: #2563eb;
+        --border: #e5e7eb;
+      }
+
+      body.dark {
+        --bg: #0f172a;
+        --card: #020617;
+        --text: #e5e7eb;
+        --muted: #94a3b8;
+        --accent: #38bdf8;
+        --border: #1e293b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         margin: 0;
-        background: #f1f5f9;
+        background: var(--bg);
+        color: var(--text);
         font-family: system-ui, sans-serif;
+        transition: 0.3s;
       }
+
       .wrap {
         max-width: 900px;
         margin: auto;
         padding: 24px;
       }
+
       .card {
-        background: #fff;
-        border-radius: 20px;
-        padding: 24px;
+        background: var(--card);
+        border-radius: 18px;
+        padding: 22px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         margin-bottom: 16px;
       }
+
       h1 {
         text-align: center;
+        margin: 0 0 16px;
       }
+
       input,
       button {
         width: 100%;
         padding: 14px;
-        margin-top: 8px;
         border-radius: 12px;
         font-size: 16px;
+        margin-top: 10px;
       }
+
       input {
-        border: 1px solid #e5e7eb;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text);
       }
+
       button {
         border: none;
-        background: #2563eb;
-        color: #fff;
+        background: var(--accent);
+        color: white;
         cursor: pointer;
+        font-weight: 600;
+        transition: 0.15s;
       }
+
+      button:active {
+        transform: scale(0.97);
+        opacity: 0.9;
+      }
+
+      .top {
+        display: flex;
+        gap: 10px;
+      }
+
+      .top button {
+        flex: 1;
+      }
+
       ul {
         list-style: none;
         padding: 0;
+        margin: 10px 0;
       }
+
       li {
         display: flex;
         justify-content: space-between;
-        border-bottom: 1px dashed #ddd;
         padding: 8px 0;
+        border-bottom: 1px dashed var(--border);
+      }
+
+      .total {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 700;
+        margin: 14px 0;
       }
     </style>
   </head>
 
   <body>
     <div class="wrap">
-      <div class="card">
+      <div class="card top">
         <button onclick="openReport()">📊 Hisobot</button>
+        <button onclick="toggleDark()">🌙 / ☀️</button>
       </div>
 
       <div class="card">
         <h1>🧺 Gilam Yuvish</h1>
 
-        <input id="name" placeholder="Ism" />
+        <input id="customerName" placeholder="Ism" />
         <input id="phone" placeholder="Telefon" />
 
         <input id="price" type="number" value="10000" />
 
         <input id="l" type="number" placeholder="Uzunlik" />
         <input id="w" type="number" placeholder="Eni" />
-        <button onclick="add()">➕ Qo‘shish</button>
+        <button onclick="addItem()">➕ Qo‘shish</button>
 
         <ul id="list"></ul>
 
-        <b>Jami: <span id="total">0</span> so‘m</b>
+        <div class="total">Jami: <span id="total">0</span> so‘m</div>
 
         <input id="paid" type="number" placeholder="To‘langan summa" />
 
-        <button onclick="saveAndPrint()">🧾 Chek chiqarish</button>
+        <button onclick="saveOrder()">🧾 Chek chiqarish</button>
       </div>
     </div>
 
     <script>
       const API = "https://gilam-yuvish-backend.onrender.com";
+
+      const nameInput = customerName;
+      const phoneInput = phone;
+      const priceInput = price;
+      const lInput = l;
+      const wInput = w;
+      const paidInput = paid;
+      const list = document.getElementById("list");
+      const totalEl = document.getElementById("total");
+
       let items = [];
+
+      function toggleDark() {
+        document.body.classList.toggle("dark");
+      }
 
       function openReport() {
         window.open("hisobot.html", "_blank");
       }
 
-      function add() {
-        const L = +l.value;
-        const W = +w.value;
-        const P = +price.value;
+      function addItem() {
+        const l = Number(lInput.value);
+        const w = Number(wInput.value);
+        const p = Number(priceInput.value);
 
-        if (!L || !W) return alert("O‘lcham kiriting");
+        if (!l || !w) return alert("O‘lchamlarni kiriting");
 
-        items.push({ l: L, w: W, sum: L * W * P });
-        l.value = w.value = "";
+        items.push({ l, w, sum: l * w * p });
+        lInput.value = wInput.value = "";
         render();
       }
 
       function render() {
         list.innerHTML = "";
-        let s = 0;
+        let sum = 0;
         items.forEach((i) => {
-          s += i.sum;
-          list.innerHTML += `<li><span>${i.l}×${
-            i.w
-          }</span><span>${i.sum.toLocaleString()}</span></li>`;
+          sum += i.sum;
+          list.innerHTML += `
+          <li>
+            <span>${i.l} × ${i.w}</span>
+            <span>${i.sum.toLocaleString()}</span>
+          </li>
+        `;
         });
-        total.textContent = s.toLocaleString();
+        totalEl.textContent = sum.toLocaleString();
       }
 
-      function saveAndPrint() {
+      async function saveOrder() {
+        if (!nameInput.value) return alert("Ism kiriting");
         if (!items.length) return alert("Gilam qo‘shing");
 
+        const totalSum = items.reduce((s, i) => s + i.sum, 0);
+
         const order = {
-          name: name.value,
-          phone: phone.value,
+          name: nameInput.value,
+          phone: phoneInput.value,
           items,
-          total: Number(total.textContent.replace(/\s/g, "")),
-          paid: Number(paid.value) || 0,
-          date: new Date().toLocaleString(),
+          total: totalSum,
+          paid: Number(paidInput.value) || 0,
         };
 
-        localStorage.setItem("currentOrder", JSON.stringify(order));
-
-        fetch(`${API}/orders`, {
+        await fetch(API + "/orders", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(order),
-        }).then(() => {
-          items = [];
-          render();
-          name.value = phone.value = paid.value = "";
-          window.open("print.html", "_blank");
         });
+
+        localStorage.setItem("currentOrder", JSON.stringify(order));
+
+        items = [];
+        render();
+        nameInput.value = phoneInput.value = paidInput.value = "";
+
+        window.open("print.html", "_blank");
       }
     </script>
   </body>
