@@ -63,103 +63,118 @@
   <div id="out"></div>
 
   <script>
-    // 🔥 YANGI LOGIKA: faqat localStorage
-    const d = JSON.parse(localStorage.getItem("printOrder"));
+    const API = "https://gilam-yuvish-backend.onrender.com";
 
-    if (!d || !Array.isArray(d.items)) {
+    const params = new URLSearchParams(location.search);
+    const id = params.get("id");
+
+    if (!id) {
       document.getElementById("out").innerHTML =
         "<div class='center'>Нет данных</div>";
-    } else {
-      const PRICE_PER_M2 = 15000; // 1 m² = 15 000
-      const PRICE_LABEL = 15;     // chekda ko‘rinadi
-
-      const date = new Date(d.createdAt || Date.now()).toLocaleString("ru-RU", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-
-      let rows = "";
-      let total = 0;
-
-      d.items.forEach(i => {
-        const l = Number(i.l) || 0;
-        const w = Number(i.w) || 0;
-        const m2 = l * w;
-        const sum = m2 * PRICE_PER_M2;
-
-        total += sum;
-
-        rows += `
-          <tr>
-            <td>КОВЕР</td>
-            <td>${l}x${w} м²</td>
-            <td class="right">${PRICE_LABEL}</td>
-            <td class="right">${sum.toLocaleString()}</td>
-          </tr>
-        `;
-      });
-
-      document.getElementById("out").innerHTML = `
-        <div class="center">
-          <img src="https://peculiar-azure-xpdzzqfo3r.edgeone.app/Skrinshot_2026-01-03_175603-removebg-preview.png" width="110"><br>
-          <div class="bold">ФАБРИКА ЧИСТКИ КОВРОВ</div>
-          <div class="small">
-            Ул. Буюк Ипак Йули 62А<br>
-            Ташкент<br>
-            Тел: 71 203 82 82
-          </div>
-        </div>
-
-        <div class="line"></div>
-
-        <div class="center bold">${date}</div>
-
-        <div class="line"></div>
-
-        <div class="bold">${d.name}</div>
-        <div class="small">${d.address || ""}</div>
-        <div class="small">${d.phone || ""}</div>
-
-        <div class="line"></div>
-
-        <table>
-          <tr class="bold">
-            <td>Наим.</td>
-            <td>Размер</td>
-            <td class="right">Цена</td>
-            <td class="right">Сумма</td>
-          </tr>
-          ${rows}
-        </table>
-
-        <div class="line"></div>
-
-        <div class="bold">ИТОГО: ${total.toLocaleString()} сум</div>
-        <div>Оплачено: ${(Number(d.paid) || 0).toLocaleString()} сум</div>
-        <div>Тип оплаты: ${d.paymentType || "-"}</div>
-
-        <div class="line"></div>
-
-        <div class="small">
-          <b>ВНИМАНИЕ ЗАКАЗЧИКА!</b><br>
-          Химчистка снимает с себя ответственность за скрытые дефекты изделия,
-          сильный износ и отсутствие маркировки.<br>
-          Претензии принимаются только при получении заказа.
-        </div>
-
-        <div class="line"></div>
-
-        <div class="small">
-          Подпись клиента: ______________________
-        </div>
-      `;
-
-      // 🖨 avtomatik chop
-      setTimeout(() => window.print(), 300);
+      throw new Error("ID yo‘q");
     }
+
+    fetch(API + "/orders/" + id)
+      .then(r => r.json())
+      .then(d => {
+        if (!d || !Array.isArray(d.items)) {
+          document.getElementById("out").innerHTML =
+            "<div class='center'>Нет данных</div>";
+          return;
+        }
+
+        const PRICE_PER_M2 = 15000;
+        const PRICE_LABEL = 15;
+
+        const date = new Date(d.createdAt).toLocaleString("ru-RU", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        let rows = "";
+        let total = 0;
+
+        d.items.forEach(i => {
+          const l = Number(i.l) || 0;
+          const w = Number(i.w) || 0;
+          const m2 = l * w;
+          const sum = m2 * PRICE_PER_M2;
+          total += sum;
+
+          rows += `
+            <tr>
+              <td>КОВЕР</td>
+              <td>${l}x${w} м²</td>
+              <td class="right">${PRICE_LABEL}</td>
+              <td class="right">${sum.toLocaleString()}</td>
+            </tr>
+          `;
+        });
+
+        document.getElementById("out").innerHTML = `
+          <div class="center">
+            <img src="https://peculiar-azure-xpdzzqfo3r.edgeone.app/Skrinshot_2026-01-03_175603-removebg-preview.png" width="110"><br>
+            <div class="bold">ФАБРИКА ЧИСТКИ КОВРОВ</div>
+            <div class="small">
+              Ул. Буюк Ипак Йули 62А<br>
+              Ташкент<br>
+              Тел: 71 203 82 82
+            </div>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="center bold">${date}</div>
+
+          <div class="line"></div>
+
+          <div class="bold">${d.name}</div>
+          <div class="small">${d.address || ""}</div>
+          <div class="small">${d.phone || ""}</div>
+
+          <div class="line"></div>
+
+          <table>
+            <tr class="bold">
+              <td>Наим.</td>
+              <td>Размер</td>
+              <td class="right">Цена</td>
+              <td class="right">Сумма</td>
+            </tr>
+            ${rows}
+          </table>
+
+          <div class="line"></div>
+
+          <div class="bold">ИТОГО: ${total.toLocaleString()} сум</div>
+          <div>Оплачено: ${(Number(d.paid) || 0).toLocaleString()} сум</div>
+          <div>Тип оплаты: ${d.paymentType || "-"}</div>
+
+          <div class="line"></div>
+
+          <div class="small">
+            <b>ВНИМАНИЕ ЗАКАЗЧИКА!</b><br>
+            Химчистка снимает с себя ответственность за скрытые дефекты изделия,
+            сильный износ и отсутствие маркировки.<br>
+            Претензии принимаются только при получении заказа.
+          </div>
+
+          <div class="line"></div>
+
+          <div class="small">
+            Подпись клиента: ______________________
+          </div>
+        `;
+
+        setTimeout(() => window.print(), 300);
+      })
+      .catch(() => {
+        document.getElementById("out").innerHTML =
+          "<div class='center'>Нет данных</div>";
+      });
   </script>
 </body>
 
