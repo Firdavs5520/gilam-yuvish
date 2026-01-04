@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>Chek</title>
+
     <style>
       @media print {
         @page {
@@ -10,48 +11,89 @@
           margin: 0;
         }
       }
+
       body {
-        font-family: monospace;
         width: 58mm;
+        margin: 0;
         padding: 6px;
+        font-family: monospace;
         font-size: 11px;
       }
+
       .center {
         text-align: center;
+      }
+      .bold {
+        font-weight: bold;
       }
       .line {
         border-top: 1px dashed #000;
         margin: 6px 0;
       }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      td {
+        padding: 2px 0;
+      }
+      .right {
+        text-align: right;
+      }
     </style>
   </head>
+
   <body>
-    <div class="center"><b>GILAM YUVISH</b></div>
+    <div class="center bold">GILAM YUVISH</div>
+
+    <div class="center">Tel: 90 000 00 00</div>
+
     <div class="line"></div>
-    <div id="out"></div>
+
+    <div id="info"></div>
+
+    <div class="line"></div>
+
+    <table id="tbl">
+      <tr class="bold">
+        <td>O‘lcham</td>
+        <td class="right">Summa</td>
+      </tr>
+    </table>
+
+    <div class="line"></div>
+
+    <div id="total"></div>
+    <div id="paid"></div>
+    <div id="rest"></div>
+
+    <div class="line"></div>
+
+    <div class="center">Rahmat! 😊</div>
 
     <script>
-      const o = JSON.parse(localStorage.getItem("currentOrder") || "{}");
-      let html = `
-Sana: ${new Date().toLocaleString()}<br>
-Ism: ${o.name || ""}<br>
-Tel: ${o.phone || ""}<br>
-<div class="line"></div>
-`;
+      const d = JSON.parse(localStorage.getItem("currentOrder") || "{}");
+
+      info.innerHTML = `
+      <div><b>Ism:</b> ${d.name}</div>
+      <div>${new Date().toLocaleString()}</div>
+    `;
 
       let sum = 0;
-      (o.items || []).forEach((i) => {
+      d.items.forEach((i) => {
         sum += i.sum;
-        html += `${i.l}×${i.w} = ${i.sum.toLocaleString()}<br>`;
+        tbl.innerHTML += `
+        <tr>
+          <td>${i.l}×${i.w}</td>
+          <td class="right">${i.sum.toLocaleString()}</td>
+        </tr>
+      `;
       });
 
-      html += `
-<div class="line"></div>
-Jami: ${sum.toLocaleString()}<br>
-To‘langan: ${(o.paid || 0).toLocaleString()}
-`;
+      total.innerHTML = "<b>Jami:</b> " + sum.toLocaleString();
+      paid.innerHTML = "To‘langan: " + (d.paid || 0).toLocaleString();
+      rest.innerHTML = "Qoldiq: " + (sum - (d.paid || 0)).toLocaleString();
 
-      out.innerHTML = html;
       window.print();
       window.onafterprint = () => window.close();
     </script>
