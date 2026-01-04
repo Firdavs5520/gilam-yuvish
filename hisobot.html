@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <title>📊 Buyurtmalar Hisoboti</title>
+
+    <style>
+      :root {
+        --bg: #f1f5f9;
+        --main: #111827;
+        --border: #e5e7eb;
+        --accent: #2563eb;
+        --green: #16a34a;
+      }
+
+      body {
+        margin: 0;
+        padding: 20px;
+        background: var(--bg);
+        font-family: system-ui, sans-serif;
+        color: var(--main);
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .wrap {
+        max-width: 1200px;
+        margin: auto;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .stat {
+        background: #fff;
+        padding: 20px;
+        border-radius: 16px;
+        font-size: 18px;
+        font-weight: 600;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      }
+
+      .controls {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+        align-items: center;
+      }
+
+      select,
+      input,
+      button {
+        padding: 14px;
+        font-size: 16px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        transition: 0.15s;
+      }
+
+      button {
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+      button:active {
+        transform: scale(0.96);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      }
+
+      th,
+      td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+      }
+
+      th {
+        background: #f8fafc;
+      }
+      tr.done {
+        background: #ecfdf5;
+      }
+
+      .btn {
+        background: var(--green);
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <h1>📊 Buyurtmalar Hisoboti</h1>
+
+      <!-- 📊 STATISTIKA -->
+      <div class="stats">
+        <div class="stat">
+          🧺 Qabul qilingan gilamlar: <span id="accepted">0</span>
+        </div>
+        <div class="stat">
+          🚚 Yetkazib berilgan gilamlar: <span id="delivered">0</span>
+        </div>
+      </div>
+
+      <!-- 🔽 SODDA SARALASH -->
+      <div class="controls">
+        <select id="mode" onchange="toggleDate()">
+          <option value="all">📋 Barcha kunlar</option>
+          <option value="day">📅 Bitta sana</option>
+        </select>
+
+        <input type="date" id="date" style="display: none" />
+
+        <button onclick="render()">Ko‘rsat</button>
+      </div>
+
+      <!-- 📋 JADVAL -->
+      <table>
+        <thead>
+          <tr>
+            <th>Ism</th>
+            <th>Sana</th>
+            <th>Gilam</th>
+            <th>Holat</th>
+            <th>Amal</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <script>
+      let orders = [];
+
+      /* 🗓 yordamchi */
+      function orderDateOnly(str) {
+        return str ? str.split(",")[0].trim() : "";
+      }
+      function localToISO(local) {
+        const [d, m, y] = local.split(".");
+        return `${y}-${m}-${d}`;
+      }
+
+      /* 🔄 rejim */
+      function toggleDate() {
+        date.style.display = mode.value === "day" ? "block" : "none";
+      }
+
+      /* 📥 yuklash */
+      async function load() {
+        const r = await fetch("http://localhost:3000/orders");
+        orders = await r.json();
+        render();
+      }
+
+      /* 📊 HISOBOT */
+      function render() {
+        const m = mode.value;
+        const d = date.value;
+
+        let acc = 0,
+          del = 0;
+        tbody.innerHTML = "";
+
+        orders
+          .filter((o) => {
+            if (m === "day") {
+              if (!d) return false;
+              const iso = localToISO(orderDateOnly(o.date));
+              return iso === d;
+            }
+            return true; // barcha kunlar
+          })
+          .sort((a, b) => b.id - a.id) // 🆕 doim yangilar tepada
+          .forEach((o) => {
+            acc += o.items.length;
+            if (o.delivered) del += o.items.length;
+
+            const tr = document.createElement("tr");
+            if (o.delivered) tr.classList.add("done");
+
+            tr.innerHTML = `
+        <td>${o.name || "—"}</td>
+        <td>${o.date}</td>
+        <td>${o.items.length}</td>
+        <td>${o.delivered ? "Yetkazildi" : "Yangi"}</td>
+        <td>
+          <button class="btn" onclick="printCheck(${o.id})">🧾 Chek</button>
+        </td>
+      `;
+            tbody.appendChild(tr);
+          });
+
+        accepted.textContent = acc;
+        delivered.textContent = del;
+      }
+
+      /* 🧾 CHEK */
+      function printCheck(id) {
+        const o = orders.find((x) => x.id === id);
+        if (!o) return;
+        localStorage.setItem("currentOrder", JSON.stringify(o));
+        window.open("print.html", "_blank");
+      }
+
+      load();
+    </script>
+  </body>
+</html>
