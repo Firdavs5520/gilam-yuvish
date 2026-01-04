@@ -1,173 +1,271 @@
 <!DOCTYPE html>
 <html lang="uz">
   <head>
+    <meta charset="UTF-8" />
+    <title>🧺 Gilam Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- favicon -->
     <link
       rel="icon"
       type="image/png"
       href="https://peculiar-azure-xpdzzqfo3r.edgeone.app/Skrinshot_2026-01-03_175603-removebg-preview.png"
     />
 
-    <meta charset="UTF-8" />
-    <title>Brand</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <style>
       :root {
         --bg: #020617;
+        --panel: #020617;
+        --card: rgba(2, 6, 23, 0.85);
         --text: #e5e7eb;
         --muted: #94a3b8;
         --accent: #38bdf8;
         --border: #1e293b;
         --danger: #ef4444;
+        --success: #22c55e;
+        --warn: #facc15;
       }
+
       * {
         box-sizing: border-box;
       }
+
       body {
         margin: 0;
         background: radial-gradient(circle at top, #020617, #000);
         color: var(--text);
         font-family: system-ui, sans-serif;
       }
+
       .app {
         display: flex;
         min-height: 100vh;
       }
+
+      /* SIDEBAR */
       .sidebar {
-        width: 240px;
-        padding: 20px;
+        width: 230px;
+        background: rgba(2, 6, 23, 0.9);
         border-right: 1px solid var(--border);
+        padding: 20px;
       }
-      .sidebar button {
+
+      .logo {
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 24px;
+      }
+
+      .menu button {
         width: 100%;
-        padding: 12px;
-        margin-top: 8px;
         background: none;
         border: none;
         color: var(--text);
+        padding: 12px;
         border-radius: 10px;
-        text-align: left;
         cursor: pointer;
+        text-align: left;
+        margin-bottom: 6px;
       }
-      .sidebar button:hover {
+
+      .menu button:hover {
         background: rgba(56, 189, 248, 0.15);
       }
+
+      /* MAIN */
       .main {
         flex: 1;
         padding: 24px;
-        display: flex;
-        justify-content: center;
       }
+
       .card {
-        width: 100%;
-        max-width: 540px;
-        background: rgba(2, 6, 23, 0.75);
+        background: var(--card);
         border: 1px solid var(--border);
         border-radius: 18px;
         padding: 20px;
+        max-width: 520px;
       }
+
       h1 {
         text-align: center;
         margin-top: 0;
       }
-      label {
-        font-size: 13px;
-        color: var(--muted);
-        margin-top: 10px;
-        display: block;
-      }
+
       input,
       button {
         width: 100%;
         padding: 14px;
-        margin-top: 6px;
         border-radius: 12px;
         font-size: 16px;
+        margin-top: 10px;
       }
+
       input {
         background: transparent;
         border: 1px solid var(--border);
         color: var(--text);
       }
+
       button {
         border: none;
         background: linear-gradient(135deg, var(--accent), #0ea5e9);
         color: #000;
-        font-weight: 700;
+        font-weight: 800;
         cursor: pointer;
+        transition: 0.15s;
       }
+
       button:active {
         transform: scale(0.97);
       }
-      ul {
-        list-style: none;
-        padding: 0;
-        margin: 10px 0;
-      }
-      li {
-        display: flex;
-        justify-content: space-between;
-        border-bottom: 1px dashed var(--border);
-        padding: 8px 0;
-        font-size: 14px;
-      }
-      .total {
-        text-align: center;
-        font-size: 22px;
-        font-weight: 700;
-        margin: 16px 0;
-      }
-      .pay {
-        display: flex;
-        gap: 10px;
-        margin-top: 6px;
-      }
-      .pay button {
-        flex: 1;
+
+      button.secondary {
         background: transparent;
         color: var(--text);
         border: 1px solid var(--border);
       }
-      .pay button.active {
-        background: var(--accent);
+
+      /* LIST */
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 12px 0;
+      }
+
+      li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px dashed var(--border);
+        padding: 8px 0;
+      }
+
+      .item-actions {
+        display: flex;
+        gap: 6px;
+      }
+
+      .item-actions button {
+        padding: 6px 10px;
+        font-size: 13px;
+        border-radius: 8px;
+        font-weight: 700;
+      }
+
+      .edit {
+        background: var(--warn);
         color: #000;
       }
-      @media (max-width: 768px) {
-        .app {
-          flex-direction: column;
+
+      .delete {
+        background: var(--danger);
+        color: #fff;
+      }
+
+      .total {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 800;
+        margin: 14px 0;
+      }
+
+      /* PAYMENT */
+      .pay-buttons {
+        display: flex;
+        gap: 8px;
+      }
+
+      .pay-buttons button.active {
+        background: var(--success);
+        color: #000;
+      }
+
+      /* LOADING */
+      .loading {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        margin-top: 12px;
+      }
+
+      .spinner {
+        width: 22px;
+        height: 22px;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
         }
+      }
+
+      /* MOBILE */
+      @media (max-width: 768px) {
         .sidebar {
+          display: none;
+        }
+        .main {
+          padding: 16px;
+        }
+      }
+      /* 📱 MOBILE TOP BAR */
+      .mobile-bar {
+        display: none;
+        margin-bottom: 12px;
+      }
+
+      @media (max-width: 768px) {
+        .mobile-bar {
+          display: block;
+        }
+
+        .mobile-bar button {
           width: 100%;
-          border-right: none;
-          border-bottom: 1px solid var(--border);
+          padding: 14px;
+          border-radius: 14px;
+          font-size: 16px;
+          font-weight: 800;
+          background: linear-gradient(135deg, var(--accent), #0ea5e9);
+          color: #000;
         }
       }
     </style>
   </head>
 
   <body>
-    <button onclick="goReport()">📊 Hisobotlar</button>
+    <!-- MOBILE TOP BAR -->
+
     <div class="app">
       <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="logo">🧺 GILAM ADMIN</div>
+        <div class="menu">
+          <button onclick="location.reload()">➕ Yangi buyurtma</button>
+          <button onclick="openReport()">📊 Hisobotlar</button>
+        </div>
+      </aside>
 
       <!-- MAIN -->
       <main class="main">
+        <div class="mobile-bar">
+          <button onclick="openReport()">📊 Hisobotlar</button>
+        </div>
         <div class="card">
           <h1>Yangi buyurtma</h1>
 
-          <label>Ism</label>
-          <input id="name" placeholder="Mijoz ismi" />
-
-          <label>Telefon</label>
+          <input id="customerName" placeholder="Mijoz ismi" />
           <input id="phone" placeholder="+998 (__) ___-__-__" />
+          <input id="address" placeholder="Manzil" />
 
-          <label>Manzil</label>
-          <input id="address" placeholder="Masalan: Chilonzor, 12-mavze" />
-
-          <label>Narx (1 m²)</label>
           <input id="price" type="number" value="10000" />
 
-          <label>Gilam o‘lchami</label>
           <input id="l" type="number" placeholder="Uzunlik (m)" />
           <input id="w" type="number" placeholder="Eni (m)" />
 
@@ -177,18 +275,21 @@
 
           <div class="total">Jami: <span id="total">0</span> so‘m</div>
 
-          <label>To‘lov usuli</label>
-          <div class="pay">
-            <button id="payCash" class="active" onclick="setPay('Naqd')">
-              Naqd
+          <input id="paid" type="number" placeholder="To‘langan summa" />
+
+          <div class="pay-buttons">
+            <button onclick="setPay('Naqd')" id="payNaqd" class="active">
+              💵 Naqd
             </button>
-            <button id="payCard" onclick="setPay('Karta')">Karta</button>
+            <button onclick="setPay('Karta')" id="payKarta">💳 Karta</button>
           </div>
 
-          <label>To‘langan summa</label>
-          <input id="paid" type="number" placeholder="0" />
+          <button id="saveBtn" onclick="saveOrder()">🧾 Chek chiqarish</button>
 
-          <button onclick="saveOrder()">🧾 Chek chiqarish</button>
+          <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <span>Saqlanmoqda...</span>
+          </div>
         </div>
       </main>
     </div>
@@ -196,7 +297,7 @@
     <script>
       const API = "https://gilam-yuvish-backend.onrender.com";
 
-      const nameInput = document.getElementById("name");
+      const nameInput = document.getElementById("customerName");
       const phoneInput = document.getElementById("phone");
       const addressInput = document.getElementById("address");
       const priceInput = document.getElementById("price");
@@ -205,95 +306,136 @@
       const paidInput = document.getElementById("paid");
       const list = document.getElementById("list");
       const totalEl = document.getElementById("total");
+      const loading = document.getElementById("loading");
+      const saveBtn = document.getElementById("saveBtn");
 
       let items = [];
+      let editIndex = null;
       let paymentType = "Naqd";
 
       function openReport() {
         location.href = "hisobot.html";
       }
 
-      /* 📞 TELEFON FORMAT */
+      /* 📞 PHONE FORMAT */
       phoneInput.addEventListener("input", () => {
         let v = phoneInput.value.replace(/\D/g, "");
         if (v.startsWith("998")) v = v.slice(3);
-        v = v.slice(0, 9);
+        if (v.length > 9) v = v.slice(0, 9);
+
         let r = "+998";
         if (v.length > 0) r += " (" + v.slice(0, 2);
         if (v.length >= 2) r += ")";
         if (v.length > 2) r += " " + v.slice(2, 5);
         if (v.length > 5) r += "-" + v.slice(5, 7);
         if (v.length > 7) r += "-" + v.slice(7, 9);
+
         phoneInput.value = r;
       });
 
-      function setPay(t) {
-        paymentType = t;
-        payCash.classList.toggle("active", t === "Naqd");
-        payCard.classList.toggle("active", t === "Karta");
+      function setPay(type) {
+        paymentType = type;
+        payNaqd.classList.toggle("active", type === "Naqd");
+        payKarta.classList.toggle("active", type === "Karta");
       }
 
       function addItem() {
         const l = Number(lInput.value);
         const w = Number(wInput.value);
         const p = Number(priceInput.value);
-        if (!l || !w) return alert("O‘lcham kiriting");
 
-        items.push({ l, w, sum: l * w * p });
-        lInput.value = wInput.value = "";
+        if (!l || !w) return alert("O‘lchamlarni kiriting");
+
+        const item = { l, w, sum: l * w * p };
+
+        if (editIndex !== null) {
+          items[editIndex] = item;
+          editIndex = null;
+        } else {
+          items.push(item);
+        }
+
+        lInput.value = "";
+        wInput.value = "";
         render();
       }
 
       function render() {
         list.innerHTML = "";
         let sum = 0;
-        items.forEach((i) => {
+
+        items.forEach((i, index) => {
           sum += i.sum;
-          list.innerHTML += `
-        <li>
-          <span>${i.l}×${i.w}</span>
-          <span>${i.sum.toLocaleString()}</span>
-        </li>`;
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <span>${i.l} × ${i.w}</span>
+            <span>${i.sum.toLocaleString()}</span>
+            <div class="item-actions">
+              <button class="edit" onclick="editItem(${index})">✏️</button>
+              <button class="delete" onclick="removeItem(${index})">🗑</button>
+            </div>
+          `;
+          list.appendChild(li);
         });
+
         totalEl.textContent = sum.toLocaleString();
       }
 
+      function editItem(i) {
+        lInput.value = items[i].l;
+        wInput.value = items[i].w;
+        editIndex = i;
+      }
+
+      function removeItem(i) {
+        if (!confirm("Gilamni o‘chirasizmi?")) return;
+        items.splice(i, 1);
+        render();
+      }
+
       async function saveOrder() {
-        const name = nameInput.value.trim();
-        if (!name) return alert("Ism kiriting");
+        if (!nameInput.value) return alert("Ism kiriting");
         if (!items.length) return alert("Gilam qo‘shing");
 
+        loading.style.display = "flex";
+        saveBtn.disabled = true;
+
+        const totalSum = items.reduce((s, i) => s + i.sum, 0);
+
         const order = {
-          name,
+          name: nameInput.value,
           phone: phoneInput.value,
           address: addressInput.value,
           items,
-          total: items.reduce((s, i) => s + i.sum, 0),
+          total: totalSum,
           paid: Number(paidInput.value) || 0,
           paymentType,
         };
 
-        await fetch(API + "/orders", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(order),
-        });
+        try {
+          await fetch(API + "/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(order),
+          });
 
-        localStorage.setItem("currentOrder", JSON.stringify(order));
+          localStorage.setItem("currentOrder", JSON.stringify(order));
 
-        items = [];
-        render();
-        nameInput.value =
-          phoneInput.value =
-          addressInput.value =
-          paidInput.value =
-            "";
-        setPay("Naqd");
+          items = [];
+          render();
+          nameInput.value =
+            phoneInput.value =
+            addressInput.value =
+            paidInput.value =
+              "";
 
-        window.open("print.html", "_blank");
-      }
-      function goReport() {
-        location.href = "hisobot.html";
+          location.href = "print.html";
+        } catch {
+          alert("Server xatosi");
+        } finally {
+          loading.style.display = "none";
+          saveBtn.disabled = false;
+        }
       }
     </script>
   </body>

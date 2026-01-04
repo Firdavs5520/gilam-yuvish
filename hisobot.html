@@ -5,7 +5,6 @@
     <title>📊 Hisobotlar</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- favicon -->
     <link
       rel="icon"
       type="image/png"
@@ -43,17 +42,10 @@
 
       h1 {
         text-align: center;
-        margin: 12px 0 16px;
+        margin-bottom: 16px;
       }
 
-      /* TOP BAR */
-      .topbar {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 14px;
-      }
-
+      /* BUTTONS */
       button {
         padding: 10px 14px;
         border-radius: 12px;
@@ -62,6 +54,7 @@
         background: var(--accent);
         color: #000;
         font-weight: 700;
+        transition: 0.15s;
       }
 
       button.secondary {
@@ -70,17 +63,17 @@
         border: 1px solid var(--border);
       }
 
-      button.active {
-        background: #0ea5e9;
-        box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);
+      button:active {
+        transform: scale(0.96);
       }
 
-      input[type="date"] {
-        padding: 10px 12px;
-        border-radius: 12px;
-        background: #020617;
-        border: 1px solid var(--border);
-        color: var(--text);
+      /* TOP BAR */
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
       }
 
       /* STATS */
@@ -92,7 +85,7 @@
       }
 
       .stat {
-        background: rgba(2, 6, 23, 0.8);
+        background: rgba(2, 6, 23, 0.85);
         border: 1px solid var(--border);
         border-radius: 16px;
         padding: 14px;
@@ -107,9 +100,9 @@
 
       /* LOADING */
       .loading {
-        display: none;
-        align-items: center;
+        display: flex;
         justify-content: center;
+        align-items: center;
         gap: 10px;
         color: var(--muted);
         margin: 20px 0;
@@ -133,7 +126,7 @@
       /* TABLE */
       .table-wrap {
         overflow-x: auto;
-        background: rgba(2, 6, 23, 0.75);
+        background: rgba(2, 6, 23, 0.8);
         border: 1px solid var(--border);
         border-radius: 16px;
       }
@@ -141,7 +134,7 @@
       table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 900px;
+        min-width: 850px;
       }
 
       th,
@@ -149,12 +142,12 @@
         padding: 12px;
         border-bottom: 1px dashed var(--border);
         font-size: 14px;
-        text-align: left;
         white-space: nowrap;
       }
 
       th {
         color: var(--muted);
+        text-align: left;
       }
 
       .done {
@@ -162,14 +155,129 @@
         font-weight: 700;
       }
 
-      .btn-deliver {
-        background: var(--success);
-        color: #000;
+      .action {
+        min-width: 130px;
       }
 
       @media (max-width: 768px) {
         table {
-          min-width: 760px;
+          min-width: 720px;
+        }
+      }
+      button.rotating {
+        position: relative;
+      }
+
+      button.rotating::before {
+        content: "🔄";
+        display: inline-block;
+        margin-right: 6px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      /* TOPBAR */
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        margin-bottom: 18px;
+
+        background: rgba(2, 6, 23, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+      }
+
+      /* TITLE */
+      .topbar .title {
+        font-size: 22px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* ACTIONS */
+      .topbar-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      /* BUTTON BASE */
+      .btn {
+        border-radius: 12px;
+        padding: 10px 16px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+      }
+
+      /* PRIMARY */
+      .btn.primary {
+        background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+        color: #000;
+      }
+
+      /* SECONDARY */
+      .btn.secondary {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+
+      /* GHOST */
+      .btn.ghost {
+        background: rgba(56, 189, 248, 0.12);
+        color: var(--accent);
+        border: 1px dashed var(--border);
+      }
+
+      /* BACK */
+      .btn.back {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+
+      /* ACTIVE */
+      .btn.active {
+        box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.4);
+        transform: translateY(-1px);
+      }
+
+      /* HOVER */
+      .btn:hover {
+        transform: translateY(-1px);
+        opacity: 0.95;
+      }
+
+      .btn:active {
+        transform: scale(0.96);
+      }
+
+      /* MOBILE */
+      @media (max-width: 768px) {
+        .topbar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .topbar-actions {
+          justify-content: space-between;
+        }
+
+        .btn {
+          flex: 1;
+          text-align: center;
         }
       }
     </style>
@@ -177,22 +285,40 @@
 
   <body>
     <div class="wrap">
+      <!-- TOP -->
       <div class="topbar">
-        <button onclick="goIndex()">⬅ Yangi buyurtma</button>
-        <button id="btnToday" onclick="setMode('today')">📅 Bugun</button>
-        <button id="btnAll" class="secondary" onclick="setMode('all')">
-          📆 Barcha
-        </button>
-        <input type="date" id="datePick" onchange="pickDate()" />
+        <div class="topbar-left">
+          <span class="title"> 📊 <b>Hisobotlar</b> </span>
+        </div>
+
+        <div class="topbar-actions">
+          <button id="refreshBtn" onclick="refreshOrders()" class="btn ghost">
+            🔄 Yangilash
+          </button>
+
+          <button
+            onclick="setMode('today')"
+            class="btn primary active"
+            id="btnToday"
+          >
+            📅 Bugun
+          </button>
+
+          <button onclick="setMode('all')" class="btn secondary" id="btnAll">
+            📆 Barchasi
+          </button>
+
+          <button onclick="goIndex()" class="btn back">← Yangi buyurtma</button>
+        </div>
       </div>
 
       <h1>📊 Hisobotlar</h1>
 
       <!-- STATS -->
       <div class="stats">
-        <div class="stat">👥 Mijozlar<b id="sClients">0</b></div>
+        <div class="stat">👥 Bugungi mijozlar<b id="sClients">0</b></div>
         <div class="stat">🚚 Yetkazildi<b id="sDelivered">0</b></div>
-        <div class="stat">💰 Foyda<b id="sProfit">0</b></div>
+        <div class="stat">💰 Bugungi tushum<b id="sProfit">0</b></div>
       </div>
 
       <!-- LOADING -->
@@ -211,7 +337,6 @@
               <th>Sana</th>
               <th>Jami</th>
               <th>To‘langan</th>
-              <th>To‘lov</th>
               <th>Holat</th>
               <th></th>
             </tr>
@@ -225,48 +350,23 @@
       const API = "https://gilam-yuvish-backend.onrender.com";
       let orders = [];
       let mode = "today";
-      let selectedDate = "";
 
       function goIndex() {
         location.href = "index.html";
       }
 
-      function formatDate(d) {
-        return d ? new Date(d).toLocaleString("uz-UZ") : "";
-      }
-
       function isToday(dateStr) {
         const d = new Date(dateStr);
         const now = new Date();
-        return (
-          d.getFullYear() === now.getFullYear() &&
-          d.getMonth() === now.getMonth() &&
-          d.getDate() === now.getDate()
-        );
-      }
-
-      function isSameDate(dateStr, ymd) {
-        return new Date(dateStr).toISOString().slice(0, 10) === ymd;
+        return d.toDateString() === now.toDateString();
       }
 
       function setMode(m) {
         mode = m;
-        selectedDate = "";
-        datePick.value = "";
-        btnToday.classList.toggle("active", m === "today");
-        btnAll.classList.toggle("active", m === "all");
         render();
       }
 
-      function pickDate() {
-        selectedDate = datePick.value;
-        mode = "";
-        btnToday.classList.remove("active");
-        btnAll.classList.remove("active");
-        render();
-      }
-
-      async function load() {
+      async function loadOrders() {
         loading.style.display = "flex";
         tableWrap.style.display = "none";
 
@@ -283,56 +383,77 @@
       function render() {
         tbody.innerHTML = "";
 
-        let list = orders;
-
-        if (selectedDate) {
-          list = orders.filter((o) => isSameDate(o.createdAt, selectedDate));
-        } else if (mode === "today") {
-          list = orders.filter((o) => isToday(o.createdAt));
-        }
-
-        list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const list =
+          mode === "today"
+            ? orders.filter((o) => isToday(o.createdAt))
+            : orders;
 
         sClients.textContent = list.length;
         sDelivered.textContent = list.filter((o) => o.delivered).length;
+
+        // 💰 FOYDA = TUSHGAN PUL
         sProfit.textContent = list
-          .reduce((s, o) => s + (Number(o.total) - Number(o.paid || 0)), 0)
+          .reduce((s, o) => s + Number(o.paid || 0), 0)
           .toLocaleString();
 
-        list.forEach((o) => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${o.name || "—"}</td>
-            <td>${o.phone || "—"}</td>
-            <td>${formatDate(o.createdAt)}</td>
-            <td>${Number(o.total).toLocaleString()}</td>
-            <td>${Number(o.paid || 0).toLocaleString()}</td>
-            <td>${o.paymentType || "—"}</td>
-            <td class="${o.delivered ? "done" : ""}">
-              ${o.delivered ? "Yetkazildi" : "Kutilmoqda"}
-            </td>
-            <td>
-              ${
-                o.delivered
-                  ? ""
-                  : `<button class="btn-deliver" onclick="deliver('${o._id}')">
-                       🚚 Yetkazildi
-                     </button>`
-              }
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
+        list
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .forEach((o) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${o.name || "—"}</td>
+              <td>${o.phone || "—"}</td>
+              <td>${new Date(o.createdAt).toLocaleString()}</td>
+              <td>${Number(o.total).toLocaleString()}</td>
+              <td>${Number(o.paid || 0).toLocaleString()}</td>
+              <td class="${o.delivered ? "done" : ""}">
+                ${o.delivered ? "Yetkazildi" : "Kutilmoqda"}
+              </td>
+              <td class="action">
+                ${
+                  o.delivered
+                    ? ""
+                    : `<button onclick="deliver('${o._id}')">🚚 Yetkazildi</button>`
+                }
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
       }
 
       async function deliver(id) {
-        await fetch(API + "/orders/" + id + "/deliver", {
-          method: "PUT",
-        });
-        load();
+        await fetch(API + "/orders/" + id + "/deliver", { method: "PUT" });
+        loadOrders();
       }
 
-      load();
+      loadOrders();
+      async function refreshOrders() {
+        const btn = document.getElementById("refreshBtn");
+
+        btn.classList.add("rotating");
+
+        try {
+          await loadOrders(); // mavjud funksiya (ordersni qayta yuklaydi)
+        } catch (e) {
+          alert("Yangilashda xatolik");
+        } finally {
+          btn.classList.remove("rotating");
+        }
+      }
+      function setMode(m) {
+        mode = m;
+
+        document.getElementById("btnToday").classList.remove("active");
+        document.getElementById("btnAll").classList.remove("active");
+
+        if (m === "today") {
+          document.getElementById("btnToday").classList.add("active");
+        } else {
+          document.getElementById("btnAll").classList.add("active");
+        }
+
+        render();
+      }
     </script>
   </body>
 </html>
