@@ -3,210 +3,90 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Hisobotlar</title>
+  <title>Hisobot</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    :root {
-      --bg: #020617;
-      --card: rgba(2, 6, 23, 0.84);
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
-      --border: #1e293b;
-      --success: #22c55e;
-      --danger: #ef4444;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: radial-gradient(circle at top, #020617, #000);
-      color: var(--text);
-      font-family: system-ui, sans-serif;
-    }
-
-    .wrap {
-      max-width: 1200px;
-      margin: auto;
-      padding: 16px;
-    }
-
-    .topbar,
-    .filters {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    button,
-    input,
-    select {
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 14px;
-    }
-
-    button {
-      border: none;
-      cursor: pointer;
-      background: var(--accent);
-      color: #000;
-      font-weight: 700;
-    }
-
-    input,
-    select {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    option {
-      color: #000;
-    }
-
-    .ghost {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    .active {
-      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.45);
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .stat {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-      text-align: center;
-      color: var(--muted);
-    }
-
-    .stat b {
-      display: block;
-      color: var(--text);
-      font-size: 22px;
-      margin-top: 6px;
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 1050px;
-    }
-
-    th,
-    td {
-      padding: 11px;
-      border-bottom: 1px dashed var(--border);
-      font-size: 14px;
-      white-space: nowrap;
-    }
-
-    th {
-      color: var(--muted);
-      text-align: left;
-    }
-
-    .done {
-      color: var(--success);
-      font-weight: 700;
-    }
-
-    .debt {
-      color: var(--danger);
-      font-weight: 700;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <h1>Hisobotlar</h1>
-      <div class="actions">
-        <button class="ghost" type="button" onclick="location.href='index.html'">Yangi buyurtma</button>
-        <button class="ghost" type="button" onclick="location.href='cheklar.html'">Cheklar</button>
-        <button class="ghost" type="button" onclick="location.href='settings.html'">Sozlamalar</button>
-        <button class="ghost" type="button" id="logoutBtn">Chiqish</button>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-title">Gilam yuvish</div>
+        <div class="brand-subtitle">Hisobotlar</div>
       </div>
-    </div>
+      <nav class="nav">
+        <a href="index.html">Yangi buyurtma</a>
+        <a href="cheklar.html">Cheklar</a>
+        <a class="active" href="hisobot.html">Hisobot</a>
+        <a href="settings.html">Sozlamalar</a>
+        <button type="button" id="logoutBtn">Chiqish</button>
+      </nav>
+    </aside>
 
-    <div class="filters">
-      <div class="actions">
-        <button type="button" id="btnToday" class="active">Bugun</button>
-        <button type="button" id="btnAll" class="ghost">Barchasi</button>
-        <button type="button" id="btnDebt" class="ghost">Qarzdorlar</button>
-      </div>
-      <div class="actions">
-        <input id="search" placeholder="Qidiruv" />
-        <select id="statusFilter"></select>
-        <button type="button" id="exportBtn">CSV</button>
-        <button type="button" id="backupBtn">Backup</button>
-        <button type="button" id="refreshBtn">Yangilash</button>
-      </div>
-    </div>
+    <main class="main">
+      <header class="page-header">
+        <div>
+          <h1 class="page-title">Hisobot</h1>
+          <div class="page-kicker">Kunlik tushum, qoldiq va statuslarni tez ko‘ring.</div>
+        </div>
+        <div class="toolbar">
+          <button class="btn secondary" type="button" onclick="location.href='index.html'">Yangi buyurtma</button>
+          <button class="btn secondary" type="button" id="backupBtn">Backup</button>
+          <button class="btn" type="button" id="exportBtn">CSV export</button>
+        </div>
+      </header>
 
-    <div class="stats">
-      <div class="stat">Mijozlar<b id="sClients">0</b></div>
-      <div class="stat">Tushum<b id="sPaid">0</b></div>
-      <div class="stat">Qoldiq<b id="sDebt">0</b></div>
-      <div class="stat">Yetkazildi<b id="sDelivered">0</b></div>
-      <div class="stat">Tayyor<b id="sReady">0</b></div>
-    </div>
+      <section class="panel pad">
+        <div class="filters">
+          <div class="toolbar">
+            <button class="btn" type="button" id="btnToday">Bugun</button>
+            <button class="btn secondary" type="button" id="btnAll">Barchasi</button>
+            <button class="btn secondary" type="button" id="btnDebt">Qarzdorlar</button>
+          </div>
+          <input class="input" id="search" placeholder="Qidiruv" />
+          <select class="select" id="statusFilter"></select>
+          <button class="btn secondary" type="button" id="refreshBtn">Yangilash</button>
+        </div>
+      </section>
 
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Chek</th>
-            <th>Ism</th>
-            <th>Telefon</th>
-            <th>Sana</th>
-            <th>Jami</th>
-            <th>To‘langan</th>
-            <th>Qoldiq</th>
-            <th>Holat</th>
-            <th>Amal</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
+      <section class="stats" style="margin-top: 14px;">
+        <div class="metric">Mijozlar<b id="sClients">0</b></div>
+        <div class="metric">Tushum<b id="sPaid">0</b></div>
+        <div class="metric warning">Qoldiq<b id="sDebt">0</b></div>
+        <div class="metric">Tayyor<b id="sReady">0</b></div>
+        <div class="metric">Yetkazildi<b id="sDelivered">0</b></div>
+      </section>
+
+      <section class="panel" style="margin-top: 14px;">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Chek</th>
+                <th>Mijoz</th>
+                <th>Telefon</th>
+                <th>Sana</th>
+                <th>Jami</th>
+                <th>To‘langan</th>
+                <th>Qoldiq</th>
+                <th>Holat</th>
+                <th>Amal</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <ul class="mobile-list" id="mobileList"></ul>
+      </section>
+    </main>
   </div>
 
   <script src="shared.js"></script>
   <script>
     const {
       apiFetch,
+      createStatusBadge,
       downloadBackup,
       exportCsv,
       formatDate,
@@ -218,6 +98,7 @@
     } = window.GilamApp;
 
     const tbody = document.getElementById("tbody");
+    const mobileList = document.getElementById("mobileList");
     const searchInput = document.getElementById("search");
     const statusFilter = document.getElementById("statusFilter");
     const btnToday = document.getElementById("btnToday");
@@ -230,8 +111,8 @@
     const sClients = document.getElementById("sClients");
     const sPaid = document.getElementById("sPaid");
     const sDebt = document.getElementById("sDebt");
-    const sDelivered = document.getElementById("sDelivered");
     const sReady = document.getElementById("sReady");
+    const sDelivered = document.getElementById("sDelivered");
 
     let orders = [];
     let statuses = [];
@@ -251,17 +132,17 @@
           order.name,
           order.phone,
           order.address,
-        ]
-          .join(" ")
-          .toLowerCase();
+        ].join(" ").toLowerCase();
         const matchesMode =
           mode === "all" ||
           (mode === "today" && isToday(order.createdAt)) ||
           (mode === "debt" && Number(order.balance || 0) > 0);
-        const matchesSearch = !search || searchable.includes(search);
-        const matchesStatus = !status || order.status === status;
 
-        return matchesMode && matchesSearch && matchesStatus;
+        return (
+          matchesMode &&
+          (!search || searchable.includes(search)) &&
+          (!status || order.status === status)
+        );
       });
     }
 
@@ -275,6 +156,7 @@
 
     function createStatusSelect(order) {
       const select = document.createElement("select");
+      select.className = "select";
       statuses.forEach((status) => {
         const option = document.createElement("option");
         option.value = status.value;
@@ -286,24 +168,63 @@
       return select;
     }
 
+    function setMode(nextMode) {
+      mode = nextMode;
+      btnToday.className = mode === "today" ? "btn" : "btn secondary";
+      btnAll.className = mode === "all" ? "btn" : "btn secondary";
+      btnDebt.className = mode === "debt" ? "btn" : "btn secondary";
+      render();
+    }
+
     function renderStats(list) {
       sClients.textContent = list.length;
-      sPaid.textContent = formatMoney(list.reduce((sum, order) => sum + Number(order.paid || 0), 0));
-      sDebt.textContent = formatMoney(list.reduce((sum, order) => sum + Number(order.balance || 0), 0));
-      sDelivered.textContent = list.filter((order) => order.status === "delivered").length;
+      sPaid.textContent = `${formatMoney(list.reduce((sum, order) => sum + Number(order.paid || 0), 0))} so‘m`;
+      sDebt.textContent = `${formatMoney(list.reduce((sum, order) => sum + Number(order.balance || 0), 0))} so‘m`;
       sReady.textContent = list.filter((order) => order.status === "ready").length;
+      sDelivered.textContent = list.filter((order) => order.status === "delivered").length;
+    }
+
+    function showMessage(message) {
+      tbody.replaceChildren();
+      mobileList.replaceChildren();
+      const tr = document.createElement("tr");
+      const td = addCell(tr, message);
+      const li = document.createElement("li");
+      td.colSpan = 9;
+      li.className = "mobile-card";
+      li.textContent = message;
+      tbody.appendChild(tr);
+      mobileList.appendChild(li);
+    }
+
+    function createActions(order) {
+      const wrap = document.createElement("div");
+      const printButton = document.createElement("button");
+      const payButton = document.createElement("button");
+
+      wrap.className = "actions";
+      printButton.className = "btn small";
+      printButton.type = "button";
+      printButton.textContent = "Chop etish";
+      printButton.addEventListener("click", () => window.open(`print.html?id=${encodeURIComponent(order._id)}`, "_blank"));
+
+      payButton.className = "btn secondary small";
+      payButton.type = "button";
+      payButton.textContent = "To‘lov";
+      payButton.addEventListener("click", () => updatePayment(order));
+
+      wrap.append(printButton, payButton);
+      return wrap;
     }
 
     function render() {
       const list = visibleOrders();
       tbody.replaceChildren();
+      mobileList.replaceChildren();
       renderStats(list);
 
       if (!list.length) {
-        const tr = document.createElement("tr");
-        const td = addCell(tr, "Ma'lumot yo‘q");
-        td.colSpan = 9;
-        tbody.appendChild(tr);
+        showMessage("Ma’lumot yo‘q");
         return;
       }
 
@@ -315,38 +236,50 @@
           addCell(tr, order.name || "—");
           addCell(tr, order.phone || "—");
           addCell(tr, formatDate(order.createdAt));
-          addCell(tr, formatMoney(order.total));
-          addCell(tr, formatMoney(order.paid));
-          addCell(tr, formatMoney(order.balance), Number(order.balance || 0) > 0 ? "debt" : "");
+          addCell(tr, `${formatMoney(order.total)} so‘m`);
+          addCell(tr, `${formatMoney(order.paid)} so‘m`);
+          addCell(tr, `${formatMoney(order.balance)} so‘m`, Number(order.balance || 0) > 0 ? "debt" : "");
 
           const statusCell = document.createElement("td");
-          statusCell.appendChild(createStatusSelect(order));
-          statusCell.appendChild(document.createTextNode(` ${statusLabel(order.status, statuses)}`));
-          if (order.status === "delivered") statusCell.className = "done";
+          statusCell.append(createStatusBadge(order.status, statuses), document.createTextNode(" "), createStatusSelect(order));
           tr.appendChild(statusCell);
 
-          const actions = document.createElement("td");
-          const printButton = document.createElement("button");
-          const payButton = document.createElement("button");
-          printButton.type = "button";
-          printButton.textContent = "Chop";
-          printButton.addEventListener("click", () => window.open(`print.html?id=${encodeURIComponent(order._id)}`, "_blank"));
-          payButton.type = "button";
-          payButton.className = "ghost";
-          payButton.textContent = "To‘lov";
-          payButton.addEventListener("click", () => updatePayment(order));
-          actions.append(printButton, document.createTextNode(" "), payButton);
-          tr.appendChild(actions);
+          const actionCell = document.createElement("td");
+          actionCell.appendChild(createActions(order));
+          tr.appendChild(actionCell);
           tbody.appendChild(tr);
-        });
-    }
 
-    function setMode(nextMode) {
-      mode = nextMode;
-      btnToday.classList.toggle("active", mode === "today");
-      btnAll.classList.toggle("active", mode === "all");
-      btnDebt.classList.toggle("active", mode === "debt");
-      render();
+          const card = document.createElement("li");
+          const title = document.createElement("div");
+          const meta = document.createElement("div");
+          const metrics = document.createElement("div");
+          const statusLine = document.createElement("div");
+
+          card.className = "mobile-card";
+          title.className = "card-title";
+          title.textContent = `${order.orderNoLabel || "№----"} · ${order.name || "—"}`;
+          meta.className = "meta";
+          meta.textContent = `${order.phone || ""} · ${formatDate(order.createdAt)}`;
+          metrics.className = "summary-grid";
+          [
+            ["Jami", order.total, false],
+            ["To‘langan", order.paid, false],
+            ["Qoldiq", order.balance, Number(order.balance || 0) > 0],
+          ].forEach(([label, value, warning]) => {
+            const metric = document.createElement("div");
+            const text = document.createElement("span");
+            const bold = document.createElement("b");
+            metric.className = warning ? "metric warning" : "metric";
+            text.textContent = label;
+            bold.textContent = `${formatMoney(value)} so‘m`;
+            metric.append(text, bold);
+            metrics.appendChild(metric);
+          });
+          statusLine.className = "toolbar";
+          statusLine.append(createStatusBadge(order.status, statuses), createStatusSelect(order));
+          card.append(title, meta, metrics, statusLine, createActions(order));
+          mobileList.appendChild(card);
+        });
     }
 
     function fillStatuses() {
@@ -425,10 +358,7 @@
         fillStatuses();
         await loadOrders();
       } catch (error) {
-        const tr = document.createElement("tr");
-        const td = addCell(tr, error.message || "Hisobotlarni yuklashda xatolik");
-        td.colSpan = 9;
-        tbody.replaceChildren(tr);
+        showMessage(error.message || "Hisobotlarni yuklashda xatolik");
       }
     }
 

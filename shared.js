@@ -162,6 +162,17 @@
     return statuses.find((status) => status.value === value)?.label || value || "";
   }
 
+  function statusClass(value) {
+    return `status-badge status-${value || "received"}`;
+  }
+
+  function createStatusBadge(value, statuses = fallbackStatuses) {
+    const badge = document.createElement("span");
+    badge.className = statusClass(value);
+    badge.textContent = statusLabel(value, statuses);
+    return badge;
+  }
+
   function createElement(tag, options = {}) {
     const element = document.createElement(tag);
     if (options.className) element.className = options.className;
@@ -223,6 +234,8 @@
     logout,
     readJsonResponse,
     redirectAfterLogin,
+    createStatusBadge,
+    statusClass,
     statusLabel,
   };
 })();

@@ -5,202 +5,78 @@
   <meta charset="UTF-8" />
   <title>Cheklar</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    :root {
-      --bg: #020617;
-      --card: rgba(2, 6, 23, 0.85);
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
-      --border: #1e293b;
-      --danger: #ef4444;
-      --success: #22c55e;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: radial-gradient(circle at top, #020617, #000);
-      color: var(--text);
-      font-family: system-ui, sans-serif;
-    }
-
-    .wrap {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 16px;
-      min-height: 100vh;
-    }
-
-    .topbar,
-    .filters {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    button,
-    input,
-    select {
-      padding: 11px 12px;
-      border-radius: 10px;
-      font-size: 14px;
-    }
-
-    button {
-      border: none;
-      font-weight: 700;
-      cursor: pointer;
-      background: var(--accent);
-      color: #000;
-    }
-
-    input,
-    select {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    option {
-      color: #000;
-    }
-
-    .ghost {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .danger {
-      background: #ef44441f;
-      color: var(--danger);
-      border: 1px solid #ef444455;
-    }
-
-    .success {
-      background: var(--success);
-      color: #000;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: grid;
-      gap: 10px;
-    }
-
-    li {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px;
-      display: grid;
-      gap: 10px;
-    }
-
-    .row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .name {
-      font-weight: 800;
-      font-size: 17px;
-    }
-
-    .meta {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .money {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(120px, 1fr));
-      gap: 8px;
-    }
-
-    .money div {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 8px;
-      color: var(--muted);
-    }
-
-    .money b {
-      display: block;
-      color: var(--text);
-      margin-top: 3px;
-    }
-
-    .status {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    @media (max-width: 700px) {
-      .money {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <h1>Cheklar</h1>
-      <div class="actions">
-        <button class="ghost" type="button" onclick="location.href='index.html'">Yangi buyurtma</button>
-        <button class="ghost" type="button" onclick="location.href='hisobot.html'">Hisobot</button>
-        <button class="ghost" type="button" onclick="location.href='settings.html'">Sozlamalar</button>
-        <button class="ghost" type="button" id="logoutBtn">Chiqish</button>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-title">Gilam yuvish</div>
+        <div class="brand-subtitle">Buyurtmalar</div>
       </div>
-    </div>
+      <nav class="nav">
+        <a href="index.html">Yangi buyurtma</a>
+        <a class="active" href="cheklar.html">Cheklar</a>
+        <a href="hisobot.html">Hisobot</a>
+        <a href="settings.html">Sozlamalar</a>
+        <button type="button" id="logoutBtn">Chiqish</button>
+      </nav>
+    </aside>
 
-    <div class="filters">
-      <input id="search" placeholder="Ism, telefon yoki chek raqami" />
-      <select id="statusFilter"></select>
-      <label><input id="debtOnly" type="checkbox" /> Qarzdorlar</label>
-      <div class="actions">
-        <button type="button" id="exportBtn">CSV</button>
-        <button type="button" id="backupBtn">Backup</button>
-        <button type="button" id="refreshBtn">Yangilash</button>
-      </div>
-    </div>
+    <main class="main">
+      <header class="page-header">
+        <div>
+          <h1 class="page-title">Cheklar</h1>
+          <div class="page-kicker">Buyurtmalarni qidirish, status va to‘lovni boshqarish.</div>
+        </div>
+        <div class="toolbar">
+          <button class="btn secondary" type="button" onclick="location.href='index.html'">Yangi buyurtma</button>
+          <button class="btn secondary" type="button" id="backupBtn">Backup</button>
+          <button class="btn" type="button" id="exportBtn">CSV export</button>
+        </div>
+      </header>
 
-    <div class="card">
-      <ul id="list"></ul>
-    </div>
+      <section class="panel pad">
+        <div class="filters">
+          <input class="input" id="search" placeholder="Ism, telefon yoki chek raqami" />
+          <select class="select" id="statusFilter"></select>
+          <label class="toolbar">
+            <input id="debtOnly" type="checkbox" />
+            <span>Faqat qarzdorlar</span>
+          </label>
+          <button class="btn secondary" type="button" id="refreshBtn">Yangilash</button>
+        </div>
+      </section>
+
+      <section class="panel" style="margin-top: 14px;">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Chek</th>
+                <th>Mijoz</th>
+                <th>Telefon</th>
+                <th>Sana</th>
+                <th>Jami</th>
+                <th>Qoldiq</th>
+                <th>Holat</th>
+                <th>Amal</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <ul class="mobile-list" id="mobileList"></ul>
+      </section>
+    </main>
   </div>
 
   <script src="shared.js"></script>
   <script>
     const {
       apiFetch,
+      createStatusBadge,
       downloadBackup,
       exportCsv,
       formatDate,
@@ -211,7 +87,8 @@
       statusLabel,
     } = window.GilamApp;
 
-    const list = document.getElementById("list");
+    const tbody = document.getElementById("tbody");
+    const mobileList = document.getElementById("mobileList");
     const searchInput = document.getElementById("search");
     const statusFilter = document.getElementById("statusFilter");
     const debtOnly = document.getElementById("debtOnly");
@@ -223,12 +100,6 @@
     let orders = [];
     let statuses = [];
 
-    function showMessage(message) {
-      const li = document.createElement("li");
-      li.textContent = message;
-      list.replaceChildren(li);
-    }
-
     function filteredOrders() {
       const search = searchInput.value.trim().toLowerCase();
       const status = statusFilter.value;
@@ -239,36 +110,43 @@
           order.name,
           order.phone,
           order.address,
-        ]
-          .join(" ")
-          .toLowerCase();
-        const matchesSearch = !search || searchable.includes(search);
-        const matchesStatus = !status || order.status === status;
-        const matchesDebt = !debtOnly.checked || Number(order.balance || 0) > 0;
+        ].join(" ").toLowerCase();
 
-        return matchesSearch && matchesStatus && matchesDebt;
+        return (
+          (!search || searchable.includes(search)) &&
+          (!status || order.status === status) &&
+          (!debtOnly.checked || Number(order.balance || 0) > 0)
+        );
       });
     }
 
-    function addMeta(parent, text) {
-      const div = document.createElement("div");
-      div.className = "meta";
-      div.textContent = text;
-      parent.appendChild(div);
+    function showMessage(message) {
+      tbody.replaceChildren();
+      mobileList.replaceChildren();
+      const row = document.createElement("tr");
+      const cell = document.createElement("td");
+      const item = document.createElement("li");
+
+      cell.colSpan = 8;
+      cell.textContent = message;
+      row.appendChild(cell);
+      tbody.appendChild(row);
+      item.className = "mobile-card";
+      item.textContent = message;
+      mobileList.appendChild(item);
     }
 
-    function addMoney(parent, label, value) {
-      const box = document.createElement("div");
-      const title = document.createElement("span");
-      const number = document.createElement("b");
-      title.textContent = label;
-      number.textContent = `${formatMoney(value)} so‘m`;
-      box.append(title, number);
-      parent.appendChild(box);
+    function addCell(row, text, className = "") {
+      const td = document.createElement("td");
+      td.textContent = text;
+      if (className) td.className = className;
+      row.appendChild(td);
+      return td;
     }
 
     function createStatusSelect(order) {
       const select = document.createElement("select");
+      select.className = "select";
       statuses.forEach((status) => {
         const option = document.createElement("option");
         option.value = status.value;
@@ -280,62 +158,93 @@
       return select;
     }
 
+    function createActionButtons(order) {
+      const wrap = document.createElement("div");
+      const openButton = document.createElement("button");
+      const paymentButton = document.createElement("button");
+      const deleteButton = document.createElement("button");
+
+      wrap.className = "actions";
+      openButton.className = "btn success small";
+      openButton.type = "button";
+      openButton.textContent = "Chop etish";
+      openButton.addEventListener("click", () => openCheck(order._id));
+
+      paymentButton.className = "btn secondary small";
+      paymentButton.type = "button";
+      paymentButton.textContent = "To‘lov";
+      paymentButton.addEventListener("click", () => updatePayment(order));
+
+      deleteButton.className = "btn danger small";
+      deleteButton.type = "button";
+      deleteButton.textContent = "O‘chirish";
+      deleteButton.addEventListener("click", () => deleteCheck(order._id));
+
+      wrap.append(openButton, paymentButton, deleteButton);
+      return wrap;
+    }
+
+    function addMobileMeta(card, label, value, isDebt = false) {
+      const metric = document.createElement("div");
+      metric.className = isDebt ? "metric warning" : "metric";
+      const text = document.createElement("span");
+      const bold = document.createElement("b");
+      text.textContent = label;
+      bold.textContent = value;
+      metric.append(text, bold);
+      card.appendChild(metric);
+    }
+
     function render() {
       const visible = filteredOrders();
-      list.replaceChildren();
+      tbody.replaceChildren();
+      mobileList.replaceChildren();
 
       if (!visible.length) {
-        showMessage("Ma'lumot topilmadi");
+        showMessage("Ma’lumot topilmadi");
         return;
       }
 
       visible.forEach((order) => {
-        const li = document.createElement("li");
-        const row = document.createElement("div");
+        const row = document.createElement("tr");
+        addCell(row, order.orderNoLabel || "№----");
+        addCell(row, order.name || "Nomsiz mijoz");
+        addCell(row, order.phone || "");
+        addCell(row, formatDate(order.createdAt));
+        addCell(row, `${formatMoney(order.total)} so‘m`);
+        addCell(row, `${formatMoney(order.balance)} so‘m`, Number(order.balance || 0) > 0 ? "debt" : "");
+
+        const statusCell = document.createElement("td");
+        statusCell.appendChild(createStatusBadge(order.status, statuses));
+        statusCell.appendChild(document.createTextNode(" "));
+        statusCell.appendChild(createStatusSelect(order));
+        row.appendChild(statusCell);
+
+        const actionCell = document.createElement("td");
+        actionCell.appendChild(createActionButtons(order));
+        row.appendChild(actionCell);
+        tbody.appendChild(row);
+
+        const card = document.createElement("li");
         const title = document.createElement("div");
-        const actions = document.createElement("div");
+        const meta = document.createElement("div");
         const money = document.createElement("div");
-        const status = document.createElement("div");
-        const openButton = document.createElement("button");
-        const paymentButton = document.createElement("button");
-        const deleteButton = document.createElement("button");
+        const statusLine = document.createElement("div");
 
-        row.className = "row";
-        title.className = "name";
+        card.className = "mobile-card";
+        title.className = "card-title";
         title.textContent = `${order.orderNoLabel || "№----"} · ${order.name || "Nomsiz mijoz"}`;
-        actions.className = "actions";
-        money.className = "money";
-        status.className = "status";
+        meta.className = "meta";
+        meta.textContent = `${order.phone || ""} · ${formatDate(order.createdAt)}`;
+        money.className = "summary-grid";
+        statusLine.className = "toolbar";
+        addMobileMeta(money, "Jami", `${formatMoney(order.total)} so‘m`);
+        addMobileMeta(money, "To‘langan", `${formatMoney(order.paid)} so‘m`);
+        addMobileMeta(money, "Qoldiq", `${formatMoney(order.balance)} so‘m`, Number(order.balance || 0) > 0);
+        statusLine.append(createStatusBadge(order.status, statuses), createStatusSelect(order));
 
-        openButton.type = "button";
-        openButton.className = "success";
-        openButton.textContent = "Ochish";
-        openButton.addEventListener("click", () => openCheck(order._id));
-
-        paymentButton.type = "button";
-        paymentButton.textContent = "To‘lov";
-        paymentButton.addEventListener("click", () => updatePayment(order));
-
-        deleteButton.type = "button";
-        deleteButton.className = "danger";
-        deleteButton.textContent = "O‘chirish";
-        deleteButton.addEventListener("click", () => deleteCheck(order._id));
-
-        actions.append(openButton, paymentButton, deleteButton);
-        row.append(title, actions);
-        li.appendChild(row);
-        addMeta(li, `${order.phone || ""} · ${formatDate(order.createdAt)}`);
-        addMeta(li, order.address || "");
-        addMoney(money, "Jami", order.total);
-        addMoney(money, "To‘langan", order.paid);
-        addMoney(money, "Qoldiq", order.balance);
-        li.appendChild(money);
-
-        status.append(document.createTextNode("Holat: "));
-        status.appendChild(createStatusSelect(order));
-        status.append(document.createTextNode(statusLabel(order.status, statuses)));
-        li.appendChild(status);
-        list.appendChild(li);
+        card.append(title, meta, money, statusLine, createActionButtons(order));
+        mobileList.appendChild(card);
       });
     }
 
@@ -356,7 +265,6 @@
 
     async function loadChecks() {
       showMessage("Yuklanmoqda...");
-
       try {
         const response = await apiFetch("/orders?limit=1000");
         orders = await readJsonResponse(response);
@@ -404,7 +312,6 @@
 
     async function deleteCheck(id) {
       if (!confirm("Chek o‘chirilsinmi?")) return;
-
       try {
         const response = await apiFetch(`/orders/${encodeURIComponent(id)}`, {
           method: "DELETE",
