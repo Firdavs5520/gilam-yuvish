@@ -2,170 +2,458 @@
 <html lang="uz">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>Cheklar</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <title>Cheklar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #020617;
+      --card: rgba(2, 6, 23, 0.85);
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --border: #1e293b;
+      --danger: #ef4444;
+      --success: #22c55e;
+    }
 
-    <style>
-        body {
-            margin: 0;
-            background: #020617;
-            color: #e5e7eb;
-            font-family: system-ui;
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        .wrap {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 16px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #020617, #000);
+      color: var(--text);
+      font-family: system-ui, sans-serif;
+    }
 
-        .top {
-            margin-bottom: 12px;
-        }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px;
+      min-height: 100vh;
+    }
 
-        button {
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            font-weight: 700;
-            cursor: pointer;
-        }
+    .topbar,
+    .filters {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
 
-        .back {
-            background: #38bdf8;
-            color: #000;
-        }
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
-        .card {
-            background: rgba(2, 6, 23, .85);
-            border: 1px solid #1e293b;
-            border-radius: 16px;
-            padding: 16px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
+    button,
+    input,
+    select {
+      padding: 11px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
 
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            flex: 1;
-            overflow-y: auto;
-        }
+    button {
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--accent);
+      color: #000;
+    }
 
-        li {
-            border: 1px solid #1e293b;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 10px;
-        }
+    input,
+    select {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
 
-        .name {
-            font-weight: 700;
-        }
+    option {
+      color: #000;
+    }
 
-        .meta {
-            font-size: 13px;
-            opacity: .7;
-            margin-top: 4px;
-        }
+    .ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
 
-        .actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-        }
+    .danger {
+      background: #ef44441f;
+      color: var(--danger);
+      border: 1px solid #ef444455;
+    }
 
-        .open {
-            flex: 1;
-            background: #22c55e;
-            color: #000;
-        }
+    .success {
+      background: var(--success);
+      color: #000;
+    }
 
-        .del {
-            flex: 1;
-            background: #ef44441f;
-            color: #ef4444;
-        }
-    </style>
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    li {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .name {
+      font-weight: 800;
+      font-size: 17px;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .money {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(120px, 1fr));
+      gap: 8px;
+    }
+
+    .money div {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px;
+      color: var(--muted);
+    }
+
+    .money b {
+      display: block;
+      color: var(--text);
+      margin-top: 3px;
+    }
+
+    .status {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    @media (max-width: 700px) {
+      .money {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <div class="wrap">
-
-        <div class="top">
-            <button class="back" onclick="goBack()">← Yangi chek yaratish</button>
-        </div>
-
-        <div class="card">
-            <h2 style="text-align:center;margin-top:0">🧾 Cheklar</h2>
-            <ul id="list">Yuklanmoqda...</ul>
-        </div>
-
+  <div class="wrap">
+    <div class="topbar">
+      <h1>Cheklar</h1>
+      <div class="actions">
+        <button class="ghost" type="button" onclick="location.href='index.html'">Yangi buyurtma</button>
+        <button class="ghost" type="button" onclick="location.href='hisobot.html'">Hisobot</button>
+        <button class="ghost" type="button" onclick="location.href='settings.html'">Sozlamalar</button>
+        <button class="ghost" type="button" id="logoutBtn">Chiqish</button>
+      </div>
     </div>
 
-    <script>
-        const API = "https://gilam-yuvish-backend.onrender.com";
+    <div class="filters">
+      <input id="search" placeholder="Ism, telefon yoki chek raqami" />
+      <select id="statusFilter"></select>
+      <label><input id="debtOnly" type="checkbox" /> Qarzdorlar</label>
+      <div class="actions">
+        <button type="button" id="exportBtn">CSV</button>
+        <button type="button" id="backupBtn">Backup</button>
+        <button type="button" id="refreshBtn">Yangilash</button>
+      </div>
+    </div>
 
-        function goBack() {
-            location.href = "index.html";
-        }
+    <div class="card">
+      <ul id="list"></ul>
+    </div>
+  </div>
 
-        async function loadChecks() {
-            const ul = document.getElementById("list");
-            ul.innerHTML = "Yuklanmoqda...";
+  <script src="shared.js"></script>
+  <script>
+    const {
+      apiFetch,
+      downloadBackup,
+      exportCsv,
+      formatDate,
+      formatMoney,
+      loadMeta,
+      logout,
+      readJsonResponse,
+      statusLabel,
+    } = window.GilamApp;
 
-            const res = await fetch(API + "/orders");
-            const data = await res.json();
+    const list = document.getElementById("list");
+    const searchInput = document.getElementById("search");
+    const statusFilter = document.getElementById("statusFilter");
+    const debtOnly = document.getElementById("debtOnly");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const exportBtn = document.getElementById("exportBtn");
+    const backupBtn = document.getElementById("backupBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-            ul.innerHTML = "";
+    let orders = [];
+    let statuses = [];
 
-            if (!data.length) {
-                ul.innerHTML = "<li>Cheklar yo‘q</li>";
-                return;
-            }
+    function showMessage(message) {
+      const li = document.createElement("li");
+      li.textContent = message;
+      list.replaceChildren(li);
+    }
 
-            data.forEach(o => {
-                const li = document.createElement("li");
-                li.innerHTML = `
-          <div class="name">${o.name}</div>
-          <div class="meta">${o.phone || ""}</div>
-          <div class="meta">${new Date(o.createdAt).toLocaleString()}</div>
-          <div class="meta">Jami: ${Number(o.total).toLocaleString()} so‘m</div>
+    function filteredOrders() {
+      const search = searchInput.value.trim().toLowerCase();
+      const status = statusFilter.value;
 
-          <div class="actions">
-            <button class="del" onclick="deleteCheck('${o._id}')">🗑 O‘chirish</button>
-          </div>
-        `;
-                ul.appendChild(li);
-            });
-        }
+      return orders.filter((order) => {
+        const searchable = [
+          order.orderNoLabel,
+          order.name,
+          order.phone,
+          order.address,
+        ]
+          .join(" ")
+          .toLowerCase();
+        const matchesSearch = !search || searchable.includes(search);
+        const matchesStatus = !status || order.status === status;
+        const matchesDebt = !debtOnly.checked || Number(order.balance || 0) > 0;
 
-        function openCheck(id) {
-            window.open("print.html?id=" + id, "_blank");
-        }
+        return matchesSearch && matchesStatus && matchesDebt;
+      });
+    }
 
-        async function deleteCheck(id) {
-            if (!confirm("Chek o‘chirilsinmi?")) return;
+    function addMeta(parent, text) {
+      const div = document.createElement("div");
+      div.className = "meta";
+      div.textContent = text;
+      parent.appendChild(div);
+    }
 
-            const res = await fetch(API + "/orders/" + id, {
-                method: "DELETE"
-            });
+    function addMoney(parent, label, value) {
+      const box = document.createElement("div");
+      const title = document.createElement("span");
+      const number = document.createElement("b");
+      title.textContent = label;
+      number.textContent = `${formatMoney(value)} so‘m`;
+      box.append(title, number);
+      parent.appendChild(box);
+    }
 
-            if (res.ok) {
-                loadChecks(); // 🔥 UI yangilanadi
-            } else {
-                alert("O‘chirishda xatolik");
-            }
-        }
+    function createStatusSelect(order) {
+      const select = document.createElement("select");
+      statuses.forEach((status) => {
+        const option = document.createElement("option");
+        option.value = status.value;
+        option.textContent = status.label;
+        select.appendChild(option);
+      });
+      select.value = order.status || "received";
+      select.addEventListener("change", () => updateStatus(order._id, select.value));
+      return select;
+    }
 
-        loadChecks();
-    </script>
+    function render() {
+      const visible = filteredOrders();
+      list.replaceChildren();
+
+      if (!visible.length) {
+        showMessage("Ma'lumot topilmadi");
+        return;
+      }
+
+      visible.forEach((order) => {
+        const li = document.createElement("li");
+        const row = document.createElement("div");
+        const title = document.createElement("div");
+        const actions = document.createElement("div");
+        const money = document.createElement("div");
+        const status = document.createElement("div");
+        const openButton = document.createElement("button");
+        const paymentButton = document.createElement("button");
+        const deleteButton = document.createElement("button");
+
+        row.className = "row";
+        title.className = "name";
+        title.textContent = `${order.orderNoLabel || "№----"} · ${order.name || "Nomsiz mijoz"}`;
+        actions.className = "actions";
+        money.className = "money";
+        status.className = "status";
+
+        openButton.type = "button";
+        openButton.className = "success";
+        openButton.textContent = "Ochish";
+        openButton.addEventListener("click", () => openCheck(order._id));
+
+        paymentButton.type = "button";
+        paymentButton.textContent = "To‘lov";
+        paymentButton.addEventListener("click", () => updatePayment(order));
+
+        deleteButton.type = "button";
+        deleteButton.className = "danger";
+        deleteButton.textContent = "O‘chirish";
+        deleteButton.addEventListener("click", () => deleteCheck(order._id));
+
+        actions.append(openButton, paymentButton, deleteButton);
+        row.append(title, actions);
+        li.appendChild(row);
+        addMeta(li, `${order.phone || ""} · ${formatDate(order.createdAt)}`);
+        addMeta(li, order.address || "");
+        addMoney(money, "Jami", order.total);
+        addMoney(money, "To‘langan", order.paid);
+        addMoney(money, "Qoldiq", order.balance);
+        li.appendChild(money);
+
+        status.append(document.createTextNode("Holat: "));
+        status.appendChild(createStatusSelect(order));
+        status.append(document.createTextNode(statusLabel(order.status, statuses)));
+        li.appendChild(status);
+        list.appendChild(li);
+      });
+    }
+
+    function fillStatuses() {
+      statusFilter.replaceChildren();
+      const all = document.createElement("option");
+      all.value = "";
+      all.textContent = "Barcha holatlar";
+      statusFilter.appendChild(all);
+
+      statuses.forEach((status) => {
+        const option = document.createElement("option");
+        option.value = status.value;
+        option.textContent = status.label;
+        statusFilter.appendChild(option);
+      });
+    }
+
+    async function loadChecks() {
+      showMessage("Yuklanmoqda...");
+
+      try {
+        const response = await apiFetch("/orders?limit=1000");
+        orders = await readJsonResponse(response);
+        render();
+      } catch (error) {
+        showMessage(error.message || "Cheklarni yuklashda xatolik");
+      }
+    }
+
+    function openCheck(id) {
+      window.open(`print.html?id=${encodeURIComponent(id)}`, "_blank");
+    }
+
+    async function updateStatus(id, status) {
+      try {
+        const response = await apiFetch(`/orders/${encodeURIComponent(id)}/status`, {
+          method: "PUT",
+          body: JSON.stringify({ status }),
+        });
+        await readJsonResponse(response);
+        await loadChecks();
+      } catch (error) {
+        alert(error.message || "Holatni yangilashda xatolik");
+      }
+    }
+
+    async function updatePayment(order) {
+      const value = prompt("To‘langan summa", order.paid || 0);
+      if (value === null) return;
+
+      try {
+        const response = await apiFetch(`/orders/${encodeURIComponent(order._id)}/payment`, {
+          method: "PATCH",
+          body: JSON.stringify({
+            paid: Number(value),
+            paymentType: order.paymentType || "Naqd",
+          }),
+        });
+        await readJsonResponse(response);
+        await loadChecks();
+      } catch (error) {
+        alert(error.message || "To‘lovni yangilashda xatolik");
+      }
+    }
+
+    async function deleteCheck(id) {
+      if (!confirm("Chek o‘chirilsinmi?")) return;
+
+      try {
+        const response = await apiFetch(`/orders/${encodeURIComponent(id)}`, {
+          method: "DELETE",
+        });
+        await readJsonResponse(response);
+        await loadChecks();
+      } catch (error) {
+        alert(error.message || "O‘chirishda xatolik");
+      }
+    }
+
+    function exportVisible() {
+      exportCsv(
+        "cheklar.csv",
+        ["Chek", "Ism", "Telefon", "Sana", "Holat", "Jami", "To'langan", "Qoldiq"],
+        filteredOrders().map((order) => [
+          order.orderNoLabel,
+          order.name,
+          order.phone,
+          formatDate(order.createdAt),
+          statusLabel(order.status, statuses),
+          order.total,
+          order.paid,
+          order.balance,
+        ])
+      );
+    }
+
+    async function init() {
+      try {
+        const meta = await loadMeta();
+        statuses = meta.statuses;
+        fillStatuses();
+        await loadChecks();
+      } catch {
+        // loadMeta redirects to login when needed.
+      }
+    }
+
+    searchInput.addEventListener("input", render);
+    statusFilter.addEventListener("change", render);
+    debtOnly.addEventListener("change", render);
+    refreshBtn.addEventListener("click", loadChecks);
+    exportBtn.addEventListener("click", exportVisible);
+    backupBtn.addEventListener("click", () => downloadBackup().catch((error) => alert(error.message)));
+    logoutBtn.addEventListener("click", logout);
+
+    init();
+  </script>
 </body>
 
 </html>

@@ -1,456 +1,449 @@
 <!DOCTYPE html>
 <html lang="uz">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Brand</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link
-      rel="icon"
-      type="image/png"
-      href="https://peculiar-azure-xpdzzqfo3r.edgeone.app/Skrinshot_2026-01-03_175603-removebg-preview.png"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <title>Hisobotlar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #020617;
+      --card: rgba(2, 6, 23, 0.84);
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --border: #1e293b;
+      --success: #22c55e;
+      --danger: #ef4444;
+    }
 
-    <style>
-      :root {
-        --bg: #020617;
-        --card: #020617;
-        --text: #e5e7eb;
-        --muted: #94a3b8;
-        --accent: #38bdf8;
-        --border: #1e293b;
-        --success: #22c55e;
-        --danger: #ef4444;
-      }
+    * {
+      box-sizing: border-box;
+    }
 
-      * {
-        box-sizing: border-box;
-      }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #020617, #000);
+      color: var(--text);
+      font-family: system-ui, sans-serif;
+    }
 
-      body {
-        margin: 0;
-        background: radial-gradient(circle at top, #020617, #000);
-        color: var(--text);
-        font-family: system-ui, sans-serif;
-      }
+    .wrap {
+      max-width: 1200px;
+      margin: auto;
+      padding: 16px;
+    }
 
-      .wrap {
-        max-width: 1200px;
-        margin: auto;
-        padding: 16px;
-      }
+    .topbar,
+    .filters {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
 
-      h1 {
-        text-align: center;
-        margin-bottom: 16px;
-      }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
 
-      /* BUTTONS */
-      button {
-        padding: 10px 14px;
-        border-radius: 12px;
-        border: none;
-        cursor: pointer;
-        background: var(--accent);
-        color: #000;
-        font-weight: 700;
-        transition: 0.15s;
-      }
+    button,
+    input,
+    select {
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+    }
 
-      button.secondary {
-        background: transparent;
-        color: var(--text);
-        border: 1px solid var(--border);
-      }
+    button {
+      border: none;
+      cursor: pointer;
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+    }
 
-      button:active {
-        transform: scale(0.96);
-      }
+    input,
+    select {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
 
-      /* TOP BAR */
-      .top-bar {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 16px;
-      }
+    option {
+      color: #000;
+    }
 
-      /* STATS */
-      .stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 12px;
-        margin-bottom: 16px;
-      }
+    .ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
 
-      .stat {
-        background: rgba(2, 6, 23, 0.85);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 14px;
-        text-align: center;
-      }
+    .active {
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.45);
+    }
 
-      .stat b {
-        display: block;
-        font-size: 22px;
-        margin-top: 6px;
-      }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
 
-      /* LOADING */
-      .loading {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        color: var(--muted);
-        margin: 0px 0;
-      }
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      text-align: center;
+      color: var(--muted);
+    }
 
-      .spinner {
-        width: 45px;
-        height: 45px;
-        border: 3px solid var(--border);
-        border-top-color: var(--accent);
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-      }
+    .stat b {
+      display: block;
+      color: var(--text);
+      font-size: 22px;
+      margin-top: 6px;
+    }
 
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
 
-      /* TABLE */
-      .table-wrap {
-        overflow-x: auto;
-        background: rgba(2, 6, 23, 0.8);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-      }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1050px;
+    }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 850px;
-      }
+    th,
+    td {
+      padding: 11px;
+      border-bottom: 1px dashed var(--border);
+      font-size: 14px;
+      white-space: nowrap;
+    }
 
-      th,
-      td {
-        padding: 12px;
-        border-bottom: 1px dashed var(--border);
-        font-size: 14px;
-        white-space: nowrap;
-      }
+    th {
+      color: var(--muted);
+      text-align: left;
+    }
 
-      th {
-        color: var(--muted);
-        text-align: left;
-      }
+    .done {
+      color: var(--success);
+      font-weight: 700;
+    }
 
-      .done {
-        color: var(--success);
-        font-weight: 700;
-      }
+    .debt {
+      color: var(--danger);
+      font-weight: 700;
+    }
+  </style>
+</head>
 
-      .action {
-        min-width: 130px;
-      }
-
-      @media (max-width: 768px) {
-        table {
-          min-width: 720px;
-        }
-      }
-      button.rotating {
-        position: relative;
-      }
-
-      button.rotating::before {
-        content: "🔄";
-        display: inline-block;
-        margin-right: 6px;
-        animation: spin 1s linear infinite;
-      }
-
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-      /* TOPBAR */
-      .topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 18px;
-        margin-bottom: 18px;
-
-        background: rgba(2, 6, 23, 0.7);
-        backdrop-filter: blur(12px);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-      }
-
-      /* TITLE */
-      .topbar .title {
-        font-size: 22px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      /* ACTIONS */
-      .topbar-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-
-      /* BUTTON BASE */
-      .btn {
-        border-radius: 12px;
-        padding: 10px 16px;
-        font-weight: 600;
-        cursor: pointer;
-        border: none;
-        transition: all 0.2s ease;
-        white-space: nowrap;
-      }
-
-      /* PRIMARY */
-      .btn.primary {
-        background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-        color: #000;
-      }
-
-      /* SECONDARY */
-      .btn.secondary {
-        background: transparent;
-        border: 1px solid var(--border);
-        color: var(--text);
-      }
-
-      /* GHOST */
-      .btn.ghost {
-        background: rgba(56, 189, 248, 0.12);
-        color: var(--accent);
-        border: 1px dashed var(--border);
-      }
-
-      /* BACK */
-      .btn.back {
-        background: rgba(34, 197, 94, 0.15);
-        color: #22c55e;
-        border: 1px solid rgba(34, 197, 94, 0.3);
-      }
-
-      /* ACTIVE */
-      .btn.active {
-        box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.4);
-        transform: translateY(-1px);
-      }
-
-      /* HOVER */
-      .btn:hover {
-        transform: translateY(-1px);
-        opacity: 0.95;
-      }
-
-      .btn:active {
-        transform: scale(0.96);
-      }
-
-      /* MOBILE */
-      @media (max-width: 768px) {
-        .topbar {
-          flex-direction: column;
-          align-items: stretch;
-        }
-
-        .topbar-actions {
-          justify-content: space-between;
-        }
-
-        .btn {
-          flex: 1;
-          text-align: center;
-        }
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="wrap">
-      <!-- TOP -->
-      <div class="topbar">
-        <div class="topbar-left">
-          <span class="title"> 📊 <b>Hisobotlar</b> </span>
-        </div>
-
-        <div class="topbar-actions">
-          <button id="refreshBtn" onclick="refreshOrders()" class="btn ghost">
-            Yangilash
-          </button>
-
-          <button
-            onclick="setMode('today')"
-            class="btn primary active"
-            id="btnToday"
-          >
-            📅 Bugun
-          </button>
-
-          <button onclick="setMode('all')" class="btn secondary" id="btnAll">
-            📆 Barchasi
-          </button>
-
-          <button onclick="goIndex()" class="btn back">← Yangi buyurtma</button>
-        </div>
-      </div>
-
-      <!-- STATS -->
-      <div class="stats">
-        <div class="stat">👥 Bugungi mijozlar<b id="sClients">0</b></div>
-        <div class="stat">🚚 Yetkazildi<b id="sDelivered">0</b></div>
-        <div class="stat">💰 Bugungi tushum<b id="sProfit">0</b></div>
-      </div>
-
-      <!-- LOADING -->
-      <div class="loading" id="loading">
-        <div class="spinner"></div>
-      </div>
-
-      <!-- TABLE -->
-      <div class="table-wrap" id="tableWrap" style="display: none">
-        <table>
-          <thead>
-            <tr>
-              <th>Ism</th>
-              <th>Telefon</th>
-              <th>Sana</th>
-              <th>Jami</th>
-              <th>To‘langan</th>
-              <th>Holat</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>Hisobotlar</h1>
+      <div class="actions">
+        <button class="ghost" type="button" onclick="location.href='index.html'">Yangi buyurtma</button>
+        <button class="ghost" type="button" onclick="location.href='cheklar.html'">Cheklar</button>
+        <button class="ghost" type="button" onclick="location.href='settings.html'">Sozlamalar</button>
+        <button class="ghost" type="button" id="logoutBtn">Chiqish</button>
       </div>
     </div>
 
-    <script>
-      const API = "https://gilam-yuvish-backend.onrender.com";
-      let orders = [];
-      let mode = "today";
+    <div class="filters">
+      <div class="actions">
+        <button type="button" id="btnToday" class="active">Bugun</button>
+        <button type="button" id="btnAll" class="ghost">Barchasi</button>
+        <button type="button" id="btnDebt" class="ghost">Qarzdorlar</button>
+      </div>
+      <div class="actions">
+        <input id="search" placeholder="Qidiruv" />
+        <select id="statusFilter"></select>
+        <button type="button" id="exportBtn">CSV</button>
+        <button type="button" id="backupBtn">Backup</button>
+        <button type="button" id="refreshBtn">Yangilash</button>
+      </div>
+    </div>
 
-      function goIndex() {
-        location.href = "index.html";
+    <div class="stats">
+      <div class="stat">Mijozlar<b id="sClients">0</b></div>
+      <div class="stat">Tushum<b id="sPaid">0</b></div>
+      <div class="stat">Qoldiq<b id="sDebt">0</b></div>
+      <div class="stat">Yetkazildi<b id="sDelivered">0</b></div>
+      <div class="stat">Tayyor<b id="sReady">0</b></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Chek</th>
+            <th>Ism</th>
+            <th>Telefon</th>
+            <th>Sana</th>
+            <th>Jami</th>
+            <th>To‘langan</th>
+            <th>Qoldiq</th>
+            <th>Holat</th>
+            <th>Amal</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script>
+    const {
+      apiFetch,
+      downloadBackup,
+      exportCsv,
+      formatDate,
+      formatMoney,
+      loadMeta,
+      logout,
+      readJsonResponse,
+      statusLabel,
+    } = window.GilamApp;
+
+    const tbody = document.getElementById("tbody");
+    const searchInput = document.getElementById("search");
+    const statusFilter = document.getElementById("statusFilter");
+    const btnToday = document.getElementById("btnToday");
+    const btnAll = document.getElementById("btnAll");
+    const btnDebt = document.getElementById("btnDebt");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const exportBtn = document.getElementById("exportBtn");
+    const backupBtn = document.getElementById("backupBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const sClients = document.getElementById("sClients");
+    const sPaid = document.getElementById("sPaid");
+    const sDebt = document.getElementById("sDebt");
+    const sDelivered = document.getElementById("sDelivered");
+    const sReady = document.getElementById("sReady");
+
+    let orders = [];
+    let statuses = [];
+    let mode = "today";
+
+    function isToday(value) {
+      return new Date(value).toDateString() === new Date().toDateString();
+    }
+
+    function visibleOrders() {
+      const search = searchInput.value.trim().toLowerCase();
+      const status = statusFilter.value;
+
+      return orders.filter((order) => {
+        const searchable = [
+          order.orderNoLabel,
+          order.name,
+          order.phone,
+          order.address,
+        ]
+          .join(" ")
+          .toLowerCase();
+        const matchesMode =
+          mode === "all" ||
+          (mode === "today" && isToday(order.createdAt)) ||
+          (mode === "debt" && Number(order.balance || 0) > 0);
+        const matchesSearch = !search || searchable.includes(search);
+        const matchesStatus = !status || order.status === status;
+
+        return matchesMode && matchesSearch && matchesStatus;
+      });
+    }
+
+    function addCell(row, text, className = "") {
+      const td = document.createElement("td");
+      td.textContent = text;
+      if (className) td.className = className;
+      row.appendChild(td);
+      return td;
+    }
+
+    function createStatusSelect(order) {
+      const select = document.createElement("select");
+      statuses.forEach((status) => {
+        const option = document.createElement("option");
+        option.value = status.value;
+        option.textContent = status.label;
+        select.appendChild(option);
+      });
+      select.value = order.status || "received";
+      select.addEventListener("change", () => updateStatus(order._id, select.value));
+      return select;
+    }
+
+    function renderStats(list) {
+      sClients.textContent = list.length;
+      sPaid.textContent = formatMoney(list.reduce((sum, order) => sum + Number(order.paid || 0), 0));
+      sDebt.textContent = formatMoney(list.reduce((sum, order) => sum + Number(order.balance || 0), 0));
+      sDelivered.textContent = list.filter((order) => order.status === "delivered").length;
+      sReady.textContent = list.filter((order) => order.status === "ready").length;
+    }
+
+    function render() {
+      const list = visibleOrders();
+      tbody.replaceChildren();
+      renderStats(list);
+
+      if (!list.length) {
+        const tr = document.createElement("tr");
+        const td = addCell(tr, "Ma'lumot yo‘q");
+        td.colSpan = 9;
+        tbody.appendChild(tr);
+        return;
       }
 
-      function isToday(dateStr) {
-        const d = new Date(dateStr);
-        const now = new Date();
-        return d.toDateString() === now.toDateString();
+      list
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .forEach((order) => {
+          const tr = document.createElement("tr");
+          addCell(tr, order.orderNoLabel || "№----");
+          addCell(tr, order.name || "—");
+          addCell(tr, order.phone || "—");
+          addCell(tr, formatDate(order.createdAt));
+          addCell(tr, formatMoney(order.total));
+          addCell(tr, formatMoney(order.paid));
+          addCell(tr, formatMoney(order.balance), Number(order.balance || 0) > 0 ? "debt" : "");
+
+          const statusCell = document.createElement("td");
+          statusCell.appendChild(createStatusSelect(order));
+          statusCell.appendChild(document.createTextNode(` ${statusLabel(order.status, statuses)}`));
+          if (order.status === "delivered") statusCell.className = "done";
+          tr.appendChild(statusCell);
+
+          const actions = document.createElement("td");
+          const printButton = document.createElement("button");
+          const payButton = document.createElement("button");
+          printButton.type = "button";
+          printButton.textContent = "Chop";
+          printButton.addEventListener("click", () => window.open(`print.html?id=${encodeURIComponent(order._id)}`, "_blank"));
+          payButton.type = "button";
+          payButton.className = "ghost";
+          payButton.textContent = "To‘lov";
+          payButton.addEventListener("click", () => updatePayment(order));
+          actions.append(printButton, document.createTextNode(" "), payButton);
+          tr.appendChild(actions);
+          tbody.appendChild(tr);
+        });
+    }
+
+    function setMode(nextMode) {
+      mode = nextMode;
+      btnToday.classList.toggle("active", mode === "today");
+      btnAll.classList.toggle("active", mode === "all");
+      btnDebt.classList.toggle("active", mode === "debt");
+      render();
+    }
+
+    function fillStatuses() {
+      statusFilter.replaceChildren();
+      const all = document.createElement("option");
+      all.value = "";
+      all.textContent = "Barcha holatlar";
+      statusFilter.appendChild(all);
+      statuses.forEach((status) => {
+        const option = document.createElement("option");
+        option.value = status.value;
+        option.textContent = status.label;
+        statusFilter.appendChild(option);
+      });
+    }
+
+    async function loadOrders() {
+      const response = await apiFetch("/orders?limit=1000");
+      orders = await readJsonResponse(response);
+      render();
+    }
+
+    async function updateStatus(id, status) {
+      try {
+        const response = await apiFetch(`/orders/${encodeURIComponent(id)}/status`, {
+          method: "PUT",
+          body: JSON.stringify({ status }),
+        });
+        await readJsonResponse(response);
+        await loadOrders();
+      } catch (error) {
+        alert(error.message || "Holatni yangilashda xatolik");
       }
+    }
 
-      function setMode(m) {
-        mode = m;
-        render();
+    async function updatePayment(order) {
+      const value = prompt("To‘langan summa", order.paid || 0);
+      if (value === null) return;
+
+      try {
+        const response = await apiFetch(`/orders/${encodeURIComponent(order._id)}/payment`, {
+          method: "PATCH",
+          body: JSON.stringify({
+            paid: Number(value),
+            paymentType: order.paymentType || "Naqd",
+          }),
+        });
+        await readJsonResponse(response);
+        await loadOrders();
+      } catch (error) {
+        alert(error.message || "To‘lovni yangilashda xatolik");
       }
+    }
 
-      async function loadOrders() {
-        loading.style.display = "flex";
-        tableWrap.style.display = "none";
+    function exportVisible() {
+      exportCsv(
+        "hisobot.csv",
+        ["Chek", "Ism", "Telefon", "Sana", "Holat", "Jami", "To'langan", "Qoldiq"],
+        visibleOrders().map((order) => [
+          order.orderNoLabel,
+          order.name,
+          order.phone,
+          formatDate(order.createdAt),
+          statusLabel(order.status, statuses),
+          order.total,
+          order.paid,
+          order.balance,
+        ])
+      );
+    }
 
-        const r = await fetch(API + "/orders");
-        orders = await r.json();
-
-        setTimeout(() => {
-          loading.style.display = "none";
-          tableWrap.style.display = "block";
-          render();
-        }, 300);
+    async function init() {
+      try {
+        const meta = await loadMeta();
+        statuses = meta.statuses;
+        fillStatuses();
+        await loadOrders();
+      } catch (error) {
+        const tr = document.createElement("tr");
+        const td = addCell(tr, error.message || "Hisobotlarni yuklashda xatolik");
+        td.colSpan = 9;
+        tbody.replaceChildren(tr);
       }
+    }
 
-      function render() {
-        tbody.innerHTML = "";
+    searchInput.addEventListener("input", render);
+    statusFilter.addEventListener("change", render);
+    btnToday.addEventListener("click", () => setMode("today"));
+    btnAll.addEventListener("click", () => setMode("all"));
+    btnDebt.addEventListener("click", () => setMode("debt"));
+    refreshBtn.addEventListener("click", () => loadOrders().catch((error) => alert(error.message)));
+    exportBtn.addEventListener("click", exportVisible);
+    backupBtn.addEventListener("click", () => downloadBackup().catch((error) => alert(error.message)));
+    logoutBtn.addEventListener("click", logout);
 
-        const list =
-          mode === "today"
-            ? orders.filter((o) => isToday(o.createdAt))
-            : orders;
+    init();
+  </script>
+</body>
 
-        sClients.textContent = list.length;
-        sDelivered.textContent = list.filter((o) => o.delivered).length;
-
-        // 💰 FOYDA = TUSHGAN PUL
-        sProfit.textContent = list
-          .reduce((s, o) => s + Number(o.paid || 0), 0)
-          .toLocaleString();
-
-        list
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .forEach((o) => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-              <td>${o.name || "—"}</td>
-              <td>${o.phone || "—"}</td>
-              <td>${new Date(o.createdAt).toLocaleString()}</td>
-              <td>${Number(o.total).toLocaleString()}</td>
-              <td>${Number(o.paid || 0).toLocaleString()}</td>
-              <td class="${o.delivered ? "done" : ""}">
-                ${o.delivered ? "Yetkazildi" : "Kutilmoqda"}
-              </td>
-              <td class="action">
-                ${
-                  o.delivered
-                    ? ""
-                    : `<button onclick="deliver('${o._id}')">🚚 Yetkazildi</button>`
-                }
-              </td>
-            `;
-            tbody.appendChild(tr);
-          });
-      }
-
-      async function deliver(id) {
-        await fetch(API + "/orders/" + id + "/deliver", { method: "PUT" });
-        loadOrders();
-      }
-
-      loadOrders();
-      async function refreshOrders() {
-        const btn = document.getElementById("refreshBtn");
-
-        btn.classList.add("rotating");
-
-        try {
-          await loadOrders(); // mavjud funksiya (ordersni qayta yuklaydi)
-        } catch (e) {
-          alert("Yangilashda xatolik");
-        } finally {
-          btn.classList.remove("rotating");
-        }
-      }
-      function setMode(m) {
-        mode = m;
-
-        document.getElementById("btnToday").classList.remove("active");
-        document.getElementById("btnAll").classList.remove("active");
-
-        if (m === "today") {
-          document.getElementById("btnToday").classList.add("active");
-        } else {
-          document.getElementById("btnAll").classList.add("active");
-        }
-
-        render();
-      }
-    </script>
-  </body>
 </html>

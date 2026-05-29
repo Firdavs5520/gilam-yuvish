@@ -5,14 +5,10 @@
   <meta charset="UTF-8" />
   <title>Brand — Yangi chek</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <link rel="icon" type="image/png"
-    href="https://peculiar-azure-xpdzzqfo3r.edgeone.app/Skrinshot_2026-01-03_175603-removebg-preview.png" />
-
   <style>
     :root {
       --bg: #020617;
-      --card: rgba(2, 6, 23, 0.85);
+      --card: rgba(2, 6, 23, 0.86);
       --text: #e5e7eb;
       --muted: #94a3b8;
       --accent: #38bdf8;
@@ -39,10 +35,9 @@
       min-height: 100vh;
     }
 
-    /* SIDEBAR */
     .sidebar {
       width: 220px;
-      background: rgba(2, 6, 23, 0.9);
+      background: rgba(2, 6, 23, 0.92);
       border-right: 1px solid var(--border);
       padding: 20px;
     }
@@ -53,23 +48,25 @@
       margin-bottom: 20px;
     }
 
-    .menu button {
+    .menu button,
+    .ghost {
       width: 100%;
       background: none;
-      border: none;
+      border: 1px solid transparent;
       color: var(--text);
       padding: 12px;
       border-radius: 10px;
       cursor: pointer;
       text-align: left;
       margin-bottom: 6px;
+      font-weight: 700;
     }
 
-    .menu button:hover {
+    .menu button:hover,
+    .ghost:hover {
       background: rgba(56, 189, 248, 0.15);
     }
 
-    /* MAIN */
     .main {
       flex: 1;
       padding: 16px;
@@ -79,7 +76,7 @@
 
     .card {
       width: 100%;
-      max-width: 520px;
+      max-width: 560px;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 18px;
@@ -123,8 +120,8 @@
     }
 
     li {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
       align-items: center;
       border-bottom: 1px dashed var(--border);
       padding: 8px 0;
@@ -140,6 +137,7 @@
       padding: 6px 10px;
       font-size: 13px;
       border-radius: 8px;
+      margin-top: 0;
     }
 
     .edit {
@@ -152,11 +150,26 @@
       color: #fff;
     }
 
-    .total {
-      text-align: center;
-      font-size: 22px;
-      font-weight: 800;
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
       margin: 12px 0;
+    }
+
+    .summary div {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .summary b {
+      display: block;
+      color: var(--text);
+      margin-top: 4px;
+      font-size: 18px;
     }
 
     .pay-buttons {
@@ -178,8 +191,24 @@
     }
 
     @media (max-width: 768px) {
+      .app {
+        display: block;
+      }
+
       .sidebar {
-        display: none;
+        width: 100%;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .menu {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .menu button {
+        margin-bottom: 0;
       }
     }
   </style>
@@ -187,17 +216,16 @@
 
 <body>
   <div class="app">
-
-    <!-- SIDEBAR -->
     <aside class="sidebar">
-      <div class="logo">Brand</div>
+      <div class="logo" id="brandName">Brand</div>
       <div class="menu">
-        <button onclick="location.href='cheklar.html'">🧾 Cheklar</button>
-        <button onclick="location.href='hisobot.html'">📊 Hisobotlar</button>
+        <button onclick="location.href='cheklar.html'">Cheklar</button>
+        <button onclick="location.href='hisobot.html'">Hisobotlar</button>
+        <button onclick="location.href='settings.html'">Sozlamalar</button>
+        <button onclick="logout()">Chiqish</button>
       </div>
     </aside>
 
-    <!-- MAIN -->
     <main class="main">
       <div class="card">
         <h1>Yangi buyurtma</h1>
@@ -205,34 +233,42 @@
         <input id="customerName" placeholder="Familiya, Ism" />
         <input id="phone" type="text" placeholder="+998 (__) ___-__-__" />
         <input id="address" placeholder="Manzil" />
+        <input id="price" type="number" value="15000" min="1" />
+        <input id="l" type="number" placeholder="Uzunlik (m)" min="0.01" step="0.01" />
+        <input id="w" type="number" placeholder="Eni (m)" min="0.01" step="0.01" />
 
-        <input id="price" type="number" value="15000" />
-
-        <input id="l" type="number" placeholder="Uzunlik (m)" />
-        <input id="w" type="number" placeholder="Eni (m)" />
-
-        <button onclick="addItem()">➕ Gilam qo‘shish</button>
-
+        <button onclick="addItem()">Gilam qo‘shish</button>
         <ul id="list"></ul>
 
-        <div class="total">Jami: <span id="total">0</span> so‘m</div>
-
-        <input id="paid" type="number" placeholder="To‘langan summa" />
-
-        <div class="pay-buttons">
-          <button id="payNaqd" class="active" onclick="setPay('Naqd')">💵 Naqd</button>
-          <button id="payKarta" onclick="setPay('Karta')">💳 Karta</button>
+        <div class="summary">
+          <div>Jami<b id="total">0</b></div>
+          <div>To‘langan<b id="paidView">0</b></div>
+          <div>Qoldiq<b id="balance">0</b></div>
         </div>
 
-        <button onclick="saveOrder()">🧾 Chek chiqarish</button>
+        <input id="paid" type="number" placeholder="To‘langan summa" min="0" />
 
+        <div class="pay-buttons">
+          <button id="payNaqd" class="active" onclick="setPay('Naqd')">Naqd</button>
+          <button id="payKarta" onclick="setPay('Karta')">Karta</button>
+        </div>
+
+        <button onclick="saveOrder()">Chek chiqarish</button>
         <div class="loading" id="loading">Saqlanmoqda...</div>
       </div>
     </main>
   </div>
 
+  <script src="shared.js"></script>
   <script>
-    const API = "https://gilam-yuvish-backend.onrender.com";
+    const {
+      apiFetch,
+      formatMoney,
+      loadMeta,
+      logout,
+      readJsonResponse,
+    } = window.GilamApp;
+    window.logout = logout;
 
     const nameInput = document.getElementById("customerName");
     const phoneInput = document.getElementById("phone");
@@ -243,49 +279,60 @@
     const paidInput = document.getElementById("paid");
     const list = document.getElementById("list");
     const totalEl = document.getElementById("total");
+    const paidView = document.getElementById("paidView");
+    const balanceEl = document.getElementById("balance");
     const loading = document.getElementById("loading");
+    const payNaqdBtn = document.getElementById("payNaqd");
+    const payKartaBtn = document.getElementById("payKarta");
+    const brandName = document.getElementById("brandName");
 
     let items = [];
     let editIndex = null;
     let paymentType = "Naqd";
 
-    /* ISMNI KATTA HARF */
     nameInput.addEventListener("input", () => {
       nameInput.value = nameInput.value
         .toLowerCase()
-        .replace(/\b\w/g, c => c.toUpperCase());
+        .replace(/\b\w/g, (letter) => letter.toUpperCase());
     });
 
-    /* TELEFON FORMAT */
     phoneInput.addEventListener("input", () => {
-      let v = phoneInput.value.replace(/\D/g, "");
-      if (v.startsWith("998")) v = v.slice(3);
-      if (v.length > 9) v = v.slice(0, 9);
+      let value = phoneInput.value.replace(/\D/g, "");
+      if (value.startsWith("998")) value = value.slice(3);
+      if (value.length > 9) value = value.slice(0, 9);
 
-      let r = "+998";
-      if (v.length > 0) r += " (" + v.slice(0, 2);
-      if (v.length >= 2) r += ")";
-      if (v.length > 2) r += " " + v.slice(2, 5);
-      if (v.length > 5) r += "-" + v.slice(5, 7);
-      if (v.length > 7) r += "-" + v.slice(7, 9);
+      let formatted = "+998";
+      if (value.length > 0) formatted += " (" + value.slice(0, 2);
+      if (value.length >= 2) formatted += ")";
+      if (value.length > 2) formatted += " " + value.slice(2, 5);
+      if (value.length > 5) formatted += "-" + value.slice(5, 7);
+      if (value.length > 7) formatted += "-" + value.slice(7, 9);
 
-      phoneInput.value = r;
+      phoneInput.value = formatted;
     });
 
-    function setPay(t) {
-      paymentType = t;
-      payNaqd.classList.toggle("active", t === "Naqd");
-      payKarta.classList.toggle("active", t === "Karta");
+    paidInput.addEventListener("input", render);
+
+    function setPay(type) {
+      paymentType = type;
+      payNaqdBtn.classList.toggle("active", type === "Naqd");
+      payKartaBtn.classList.toggle("active", type === "Karta");
+    }
+
+    function currentTotal() {
+      return items.reduce((sum, item) => sum + item.sum, 0);
     }
 
     function addItem() {
-      const l = +lInput.value;
-      const w = +wInput.value;
-      const p = +priceInput.value;
+      const l = Number(lInput.value);
+      const w = Number(wInput.value);
+      const price = Number(priceInput.value);
 
-      if (!l || !w) return alert("O‘lchamlarni kiriting");
+      if (!Number.isFinite(l) || l <= 0) return alert("Uzunlikni to'g'ri kiriting");
+      if (!Number.isFinite(w) || w <= 0) return alert("Enini to'g'ri kiriting");
+      if (!Number.isFinite(price) || price <= 0) return alert("Narxni to'g'ri kiriting");
 
-      const item = { l, w, sum: l * w * p };
+      const item = { l, w, price, sum: Math.round(l * w * price) };
 
       if (editIndex !== null) {
         items[editIndex] = item;
@@ -300,65 +347,107 @@
     }
 
     function render() {
-      list.innerHTML = "";
-      let sum = 0;
+      list.replaceChildren();
 
-      items.forEach((i, idx) => {
-        sum += i.sum;
-        list.innerHTML += `
-      <li>
-        <span>${i.l} × ${i.w}</span>
-        <span>${i.sum.toLocaleString()}</span>
-        <div class="item-actions">
-          <button class="edit" onclick="editItem(${idx})">✏️</button>
-          <button class="delete" onclick="removeItem(${idx})">🗑</button>
-        </div>
-      </li>`;
+      items.forEach((item, index) => {
+        const li = document.createElement("li");
+        const size = document.createElement("span");
+        const price = document.createElement("span");
+        const actions = document.createElement("div");
+        const editButton = document.createElement("button");
+        const deleteButton = document.createElement("button");
+
+        size.textContent = `${item.l} x ${item.w} m²`;
+        price.textContent = formatMoney(item.sum);
+        actions.className = "item-actions";
+        editButton.className = "edit";
+        editButton.type = "button";
+        editButton.textContent = "Edit";
+        editButton.addEventListener("click", () => editItem(index));
+        deleteButton.className = "delete";
+        deleteButton.type = "button";
+        deleteButton.textContent = "Del";
+        deleteButton.addEventListener("click", () => removeItem(index));
+
+        actions.append(editButton, deleteButton);
+        li.append(size, price, actions);
+        list.appendChild(li);
       });
 
-      totalEl.textContent = sum.toLocaleString();
+      const total = currentTotal();
+      const paid = Number(paidInput.value || 0);
+      totalEl.textContent = formatMoney(total);
+      paidView.textContent = formatMoney(paid);
+      balanceEl.textContent = formatMoney(Math.max(total - paid, 0));
     }
 
-    function editItem(i) {
-      lInput.value = items[i].l;
-      wInput.value = items[i].w;
-      editIndex = i;
+    function editItem(index) {
+      lInput.value = items[index].l;
+      wInput.value = items[index].w;
+      priceInput.value = items[index].price;
+      editIndex = index;
     }
 
-    function removeItem(i) {
+    function removeItem(index) {
       if (!confirm("Gilam o‘chirilsinmi?")) return;
-      items.splice(i, 1);
+      items.splice(index, 1);
       render();
     }
 
     async function saveOrder() {
       if (!nameInput.value.trim()) return alert("Ism kiriting");
-      if (!phoneInput.value.includes("+998")) return alert("Telefonni to‘g‘ri kiriting");
+      if (!/^998\d{9}$/.test(phoneInput.value.replace(/\D/g, ""))) {
+        return alert("Telefonni to'g'ri kiriting");
+      }
       if (!addressInput.value.trim()) return alert("Manzil kiriting");
       if (!items.length) return alert("Kamida 1 ta gilam qo‘shing");
 
+      const total = currentTotal();
+      const paid = Number(paidInput.value || 0);
+      if (!Number.isFinite(paid) || paid < 0) return alert("To'langan summani to'g'ri kiriting");
+      if (paid > total) return alert("To'langan summa jami summadan katta bo'lmasin");
+
       loading.style.display = "flex";
 
-      const order = {
-        name: nameInput.value,
-        phone: phoneInput.value,
-        address: addressInput.value,
-        items,
-        total: items.reduce((a, b) => a + b.sum, 0),
-        paid: +paidInput.value || 0,
-        paymentType,
-        createdAt: new Date().toISOString()
-      };
+      try {
+        const response = await apiFetch("/orders", {
+          method: "POST",
+          body: JSON.stringify({
+            name: nameInput.value,
+            phone: phoneInput.value,
+            address: addressInput.value,
+            items: items.map((item) => ({
+              l: item.l,
+              w: item.w,
+              price: item.price,
+            })),
+            paid,
+            paymentType,
+          }),
+        });
+        const data = await readJsonResponse(response);
 
-      await fetch(API + "/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(order)
-      });
-
-      localStorage.setItem("printOrder", JSON.stringify(order));
-      location.href = "print.html";
+        localStorage.setItem("printOrder", JSON.stringify(data.order));
+        location.href = "print.html";
+      } catch (error) {
+        alert(error.message || "Buyurtmani saqlashda xatolik");
+      } finally {
+        loading.style.display = "none";
+      }
     }
+
+    async function init() {
+      try {
+        const meta = await loadMeta();
+        brandName.textContent = meta.settings.businessName || "Brand";
+        priceInput.value = meta.settings.defaultPricePerM2 || 15000;
+      } catch {
+        // loadMeta redirects to login when needed.
+      }
+    }
+
+    init();
+    render();
   </script>
 </body>
 

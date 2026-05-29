@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Sozlamalar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #020617;
+      --card: rgba(2, 6, 23, 0.85);
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --border: #1e293b;
+      --success: #22c55e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #020617, #000);
+      color: var(--text);
+      font-family: system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    form {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 14px;
+    }
+
+    input,
+    textarea,
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 15px;
+      margin-top: 6px;
+    }
+
+    input,
+    textarea {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    button {
+      border: none;
+      background: var(--accent);
+      color: #000;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .success {
+      color: var(--success);
+      min-height: 22px;
+      margin-top: 12px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>Sozlamalar</h1>
+      <div class="actions">
+        <button class="ghost" type="button" onclick="location.href='index.html'">Yangi buyurtma</button>
+        <button class="ghost" type="button" onclick="location.href='cheklar.html'">Cheklar</button>
+        <button class="ghost" type="button" onclick="logout()">Chiqish</button>
+      </div>
+    </div>
+
+    <form id="settingsForm">
+      <label for="businessName">Firma nomi</label>
+      <input id="businessName" />
+
+      <label for="addressLine1">Manzil 1</label>
+      <input id="addressLine1" />
+
+      <label for="addressLine2">Manzil 2</label>
+      <input id="addressLine2" />
+
+      <label for="phone">Telefon</label>
+      <input id="phone" />
+
+      <label for="logoUrl">Logo URL</label>
+      <input id="logoUrl" />
+
+      <label for="defaultPricePerM2">1 m² narxi</label>
+      <input id="defaultPricePerM2" type="number" min="1" />
+
+      <label for="warningText">Chek ogohlantirish matni</label>
+      <textarea id="warningText"></textarea>
+
+      <button id="saveBtn" type="submit">Saqlash</button>
+      <div id="message" class="success"></div>
+    </form>
+  </div>
+
+  <script src="shared.js"></script>
+  <script>
+    const {
+      apiFetch,
+      loadMeta,
+      logout,
+      readJsonResponse,
+    } = window.GilamApp;
+    window.logout = logout;
+
+    const fields = {
+      businessName: document.getElementById("businessName"),
+      addressLine1: document.getElementById("addressLine1"),
+      addressLine2: document.getElementById("addressLine2"),
+      phone: document.getElementById("phone"),
+      logoUrl: document.getElementById("logoUrl"),
+      defaultPricePerM2: document.getElementById("defaultPricePerM2"),
+      warningText: document.getElementById("warningText"),
+    };
+    const form = document.getElementById("settingsForm");
+    const saveBtn = document.getElementById("saveBtn");
+    const message = document.getElementById("message");
+
+    async function loadSettings() {
+      try {
+        const meta = await loadMeta(true);
+        Object.entries(fields).forEach(([key, field]) => {
+          field.value = meta.settings[key] || "";
+        });
+      } catch (error) {
+        message.textContent = error.message || "Sozlamalarni yuklashda xatolik";
+      }
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      message.textContent = "";
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Saqlanmoqda...";
+
+      const payload = Object.fromEntries(
+        Object.entries(fields).map(([key, field]) => [key, field.value])
+      );
+
+      try {
+        const response = await apiFetch("/settings", {
+          method: "PUT",
+          body: JSON.stringify(payload),
+        });
+        await readJsonResponse(response);
+        await loadMeta(true);
+        message.textContent = "Sozlamalar saqlandi";
+      } catch (error) {
+        message.textContent = error.message || "Saqlashda xatolik";
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Saqlash";
+      }
+    });
+
+    loadSettings();
+  </script>
+</body>
+
+</html>
